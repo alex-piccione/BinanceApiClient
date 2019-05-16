@@ -9,8 +9,7 @@ variables:
 steps:
 
 
-- script: |
-    echo Test Build pipeline
+- script: echo Test Build pipeline
   displayName: test
   
 - task: DotNetCoreCLI@2
@@ -18,6 +17,11 @@ steps:
   inputs:
     command: restore
     projects: "$(project file)"
+
+- task: tmarkovski.projectversionasvariable.versionintovariable.projectversionasvariable@1
+  displayName: 'Get Project Version as variables from $(project file)'
+  inputs:
+    path: '$(project file)'
 
 - script: "echo Package version: $(package version)"
 
