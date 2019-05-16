@@ -11,3 +11,43 @@ steps:
     echo Test Build pipeline
   displayName: test
   
+- task: DotNetCoreCLI@2
+  displayName: "Restore F# project package"
+  inputs:
+    command: restore
+    projects: "$(project file)"
+
+- script: "echo Package version: $(package version)"
+
+- task: DotNetCoreCLI@2
+  displayName: Build peroject
+  inputs:
+    projects: "$(project file)"
+    arguments: "--configuration $(BuildConfiguration)"
+
+# test
+- task: DotNetCoreCLI@2
+  displayName: test
+  inputs:
+    command: test
+    projects: '**/*[Te]est*.*proj'
+    arguments: '--configuration $(BuildConfiguration)'
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: Create Package (dotnet pack)
+  inputs:
+    command: pack
+    packagesToPack: "$(project file)"
+    versioningScheme: byEnvVar
+    versionEnvVar: "package version"
+
+- task: NuGetCommand@2
+  displayName: Nuget publish
+  inputs:
+    command: push
+    feedsToUse: select
+    packagesToPush: "$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg"
+    nuGetFeedType: external
+    publishFeedCredentials: "Alex75 Nuget"
+    versioningScheme: off
