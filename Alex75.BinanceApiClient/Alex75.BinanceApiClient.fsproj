@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1</Version>
+    <Authors>Alesandro Piccione</Authors>
+    <Company>DreamSoft</Company>
+    <RepositoryUrl>https://alex75.visualstudio.com/_git/Binance API Client</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>cryptocurrency XRP</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Orders.fs" />
+    <Compile Include="IClient.fs" />
+    <Compile Include="Client.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="0.1.8.4" />
+    <PackageReference Include="Flurl.Http" Version="2.4.2" />
+  </ItemGroup>
+
+</Project>
