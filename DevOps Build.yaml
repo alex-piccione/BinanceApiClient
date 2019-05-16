@@ -2,7 +2,9 @@ trigger:
 - master
 
 variables:
+  BuildConfiguration: "Release"
   project file: "Alex75.BinanceApiClient/Alex75.BinanceApiClient.fsproj"
+  package version: $(Version.MajorMinor).$(Build.BuildNumber)
   
 steps:
 
