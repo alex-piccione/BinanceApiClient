@@ -1,1 +1,13 @@
+trigger:
+- master
 
+variables:
+  project file: "Alex75.BinanceApiClient/Alex75.BinanceApiClient.fsproj"
+  
+steps:
+
+
+- script: |
+    echo Test Build pipeline
+  displayName: test
+  
