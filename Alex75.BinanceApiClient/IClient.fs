@@ -1,11 +1,13 @@
 ﻿namespace Alex75.BinanceApiClient
 
+open models
 open Alex75.Cryptocurrencies
+
 
 
 type IClient =
     
-    abstract member GetTicker: pair:CurrencyPair -> Ticker
+    abstract member GetTicker: pair:CurrencyPair -> TickerResponse
 
     abstract member CreateMarketOrder: pair:CurrencyPair * operation:OrderDirection * amount:decimal -> CreateOrderResponse
     abstract member CreateLimitOrder: pair:CurrencyPair * operation:OrderDirection * amount:decimal * price:decimal -> CreateOrderResponse

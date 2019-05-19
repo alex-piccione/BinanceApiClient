@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Alex75.BinanceApiClient", "Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj", "{052A47DE-3A7F-4752-9C8B-D6EB72F98558}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "IntegrationTests", "IntegrationTests\IntegrationTests.fsproj", "{C78DBED8-BA38-4A72-93D1-A83986647E84}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "IntegrationTests", "IntegrationTests\IntegrationTests.fsproj", "{C78DBED8-BA38-4A72-93D1-A83986647E84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{729321D1-E26B-419E-8CE3-6A1298A017E8}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
