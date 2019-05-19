@@ -1,8 +1,8 @@
 ﻿namespace Alex75.BinanceApiClient
 
-open Alex75.Cryptocurrencies
-open Flurl.Http
 open System
+open Flurl.Http
+open Alex75.Cryptocurrencies
 open models
 
 
@@ -31,8 +31,8 @@ type public Client(settings:Settings) =
                 ticker_24h.ToResponse(pair)
             
 
-        member this.CreateMarketOrder(pair: CurrencyPair, operation:OrderDirection, amount: decimal) = 
+        member this.CreateMarketOrder(pair: CurrencyPair, side:OrderSide, amount: decimal) = 
             CreateOrderResponse(false, "not implemented")
 
-         member this.CreateLimitOrder(pair: CurrencyPair, operation:OrderDirection, amount: decimal, price: decimal) = 
+        member this.CreateLimitOrder(pair: CurrencyPair, side:OrderSide, amount: decimal, price: decimal) = 
             CreateOrderResponse(false, "not implemented")

@@ -9,5 +9,5 @@ type IClient =
     
     abstract member GetTicker: pair:CurrencyPair -> TickerResponse
 
-    abstract member CreateMarketOrder: pair:CurrencyPair * operation:OrderDirection * amount:decimal -> CreateOrderResponse
-    abstract member CreateLimitOrder: pair:CurrencyPair * operation:OrderDirection * amount:decimal * price:decimal -> CreateOrderResponse
+    abstract member CreateMarketOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal -> CreateOrderResponse
+    abstract member CreateLimitOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal * price:decimal -> CreateOrderResponse
