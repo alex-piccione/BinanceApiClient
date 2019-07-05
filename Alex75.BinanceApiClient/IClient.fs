@@ -4,7 +4,7 @@ open models
 open Alex75.Cryptocurrencies
 
 
-
+[<Interface>]
 type IClient =
     
     abstract member GetTicker: pair:CurrencyPair -> TickerResponse
