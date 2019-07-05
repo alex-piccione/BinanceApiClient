@@ -28,7 +28,9 @@ type public Client(settings:Settings) =
                 //let url = f"%s//api/v3/ticker/bookTicker?symbol=%s" baseUrl (symbol(pair))
                 let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
-                ticker_24h.ToResponse(pair)
+                let response = ticker_24h.ToResponse(pair)
+                if response.IsSuccess then cache.setTicker pair response.Ticker.Value
+                response
             
 
         member this.CreateMarketOrder(pair: CurrencyPair, side:OrderSide, amount: decimal) = 
