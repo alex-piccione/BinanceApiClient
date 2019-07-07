@@ -8,6 +8,8 @@ type XrpWallet (address:string, destinationTag:string option) =
     member __.DestinationTag = destinationTag
 
 
+type ServerTime = {serverTime:int64}
+
 [<AbstractClass>]
 type Response (isSuccess:bool, error:string) = 
     member __.IsSuccess = isSuccess

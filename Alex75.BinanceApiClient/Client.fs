@@ -26,13 +26,7 @@ type public Client(settings:Settings) =
     let f = sprintf
     let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
-    let get_timestamp = 
-        #if NETSTANDARD2_0
-        DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        #else
-        DateTime.UtcNow.ConvertToUnixTime();
-        #endif
-
+    let get_timestamp = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
 
     
     let parseErrorResponse (responseContent) = 
@@ -59,9 +53,7 @@ type public Client(settings:Settings) =
     interface IClient with
 
         member this.GetExchangeInfo = 
-
             let url = f"%s/api/v1/exchangeInfo" baseUrl
-
             let response = url.GetStringAsync().Result
             response
 
@@ -86,14 +78,6 @@ type public Client(settings:Settings) =
             
             let url = f"%s/api/v3/order" baseUrl           
             
-            //let parameters = {
-            //    symbol = symbol pair
-            //    side = if side = OrderSide.Buy then "BUY" else "SELL"
-            //    ``type`` = "MARKET"
-            //    quantity = quantity
-            //    timestamp = timestamp
-            //}
-
             let totalParams = f"""symbol=%s&side=%s&type=%s&quantity=%s&timestamp=%i&recvWindow=%i"""
                                (symbol pair) 
                                (if side = OrderSide.Buy then "BUY" else "SELL") 
@@ -109,8 +93,7 @@ type public Client(settings:Settings) =
                 let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                   .WithHeader("Content-Type", "application/x-www-form-urlencoded")
                                   .AllowHttpStatus("4xx")
-                                  .PostAsync(new StringContent(requestBody))  
-                                  //.PostStringAsync(requestBody)
+                                  .PostStringAsync(requestBody)
                                   .Result
 
                 let data = response.Content.ReadAsStringAsync().Result
@@ -149,18 +132,15 @@ type public Client(settings:Settings) =
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
 
-
             // https://stackoverflow.com/questions/53177049/https-post-failure-c
             // documentation said POST but it only accept data in the querystring
-
             url <- f"%s?%s" url requestBody
 
             try                
                 let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                   .WithHeader("Content-Type", "application/x-www-form-urlencoded")
                                   .AllowHttpStatus("4xx")
-                                  .PostAsync(new StringContent(""))  // empty
-                                  //.PostStringAsync(requestBody)
+                                  .PostStringAsync("")  // empty because requestBody is only accepted by querystring
                                   .Result
 
                 let data = response.Content.ReadAsStringAsync().Result

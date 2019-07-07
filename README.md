@@ -13,6 +13,7 @@ Function                     | Public | Description                             
 | Cancel Order               | No     | Cancel an order											| Not implemented
 | List User Transactions     | No     | List the User Transactions								| Not implemented
 | Get Balance                | No     | List the availability of all the currencies				| Not implemented
+| Withdraw                   | No     | Withdraw a currency                                     | Done
 
 
 ## XRP
@@ -24,7 +25,7 @@ XRP can only be exchanged using:
 - TRX/XRP
 - ZXC/XRP
 
-
+Withdraw XRP has a minimum quantity of 25.
 
 
 

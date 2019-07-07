@@ -52,6 +52,7 @@ type ClientTest () =
         let address = "" // to be set
         let addressTag = null
         
+        
         // minimum withdrawal = 50 (07/07/2019)
         let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)
 
