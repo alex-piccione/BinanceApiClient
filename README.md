@@ -7,7 +7,7 @@ Function                     | Public | Description                             
 ---                          |---     |---                                                      |---
 | Get Ticker / Get Tickers   | Yes    | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)	| Done
 | Create Market Order        | No     | Create a market order									| Done
-| Create Limit Order         | No     | Create a limit order									| Done
+| Create Limit Order         | No     | Create a limit order									| Not implemented
 | List Open Orders           | No     | List open orders										| Not implemented
 | Check Order Status         | No     |															| Not implemented
 | Cancel Order               | No     | Cancel an order											| Not implemented

@@ -3,6 +3,11 @@
 open Alex75.Cryptocurrencies
 
 
+type XrpWallet (address:string, destinationTag:string option) =
+    member __.Address = address
+    member __.DestinationTag = destinationTag
+
+
 [<AbstractClass>]
 type Response (isSuccess:bool, error:string) = 
     member __.IsSuccess = isSuccess
@@ -28,6 +33,8 @@ type Ticker_price(bidPrice:decimal, askPrice:decimal) =
 *)
 
 // {"code":-1121,"msg":"Invalid symbol."}
+
+// Binance API response
 type Ticker_24h(code:string, msg:string,
                 lastPrice:decimal, bidPrice:decimal, askPrice:decimal, 
                 openPrice:decimal, highPrice:decimal, lowPrice:decimal) =
@@ -75,3 +82,28 @@ type Ticker_24h(code:string, msg:string,
   "count": 76         // Trade count
 }
 *)
+
+
+type CreateOrderResponse(isSuccess:bool, error:string, orderId:int64, price:decimal) =
+    member this.IsSuccess = isSuccess
+    member this.Error = error
+
+    member this.Id = orderId
+    member this.Price = price
+
+
+// Binance API response
+type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
+    //member this.Id = orderId
+    //member this.Price = price
+
+    member __.ToResponse () =
+
+        CreateOrderResponse(true, null, orderId, price)
+
+
+type WithdrawResponse(msg:string, success:bool, id:string) =     
+    member __.IsSuccess = success
+    member __.Message = msg
+    member __.Id = id
+
