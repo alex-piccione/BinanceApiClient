@@ -2,14 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.1</Version>
+    <Version>0.3</Version>
     <Authors>Alesandro Piccione</Authors>
     <Company>DreamSoft</Company>
-    <RepositoryUrl>https://alex75.visualstudio.com/_git/Binance API Client</RepositoryUrl>
+    <RepositoryUrl>https://github.com/alex75it/Alex75.BinanceApiClient</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>cryptocurrency XRP BTC</PackageTags>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <FileVersion>0.3.0.0</FileVersion>
+    <PackageIconUrl>http://www.alex75.it/public/images/Binance-logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/alex75it/Alex75.BinanceApiClient</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
