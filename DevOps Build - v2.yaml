@@ -67,4 +67,4 @@ jobs:
         command: 'push'
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
         nuGetFeedType: 'external'
-        publishFeedCredentials: 'Nuget Alex75'
+        publishFeedCredentials: 'Alex75 Nuget'
