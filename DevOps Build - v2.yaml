@@ -21,3 +21,4 @@ jobs:
   dependsOn: GetVersion
   steps:
     - bash: echo "Build the solution $(package version)"
+
