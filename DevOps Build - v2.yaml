@@ -41,4 +41,4 @@ jobs:
         projects: "IntegrationTests/IntegrationTests.fsproj"
         arguments: >
           --configuration Release 
-          --filter TestCategory!=AFFECT_BALANCE&TestCategory!=REQUIRE_API_KEY
+          --filter "TestCategory!=AFFECT_BALANCE & TestCategory!=REQUIRE_API_KEY""
