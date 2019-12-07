@@ -52,10 +52,10 @@ jobs:
   - name: version
     value: "$(base version).$(Build.BuildNumber)"
   steps: 
-    - tasks: DotNetCoreCLI@2
+    - task: DotNetCoreCLI@2
       displayName: "Create package"
       inputs:
-        command: package
+        command: pack
         packagesToPack: "$(project file)"
         versioningScheme: byEnvVar
         versionEnvVar: "version"
