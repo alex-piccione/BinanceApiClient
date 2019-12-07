@@ -31,7 +31,7 @@ jobs:
 #        arguments: --configuration Release 
 
 - job: Test
-  dependsOn: Build
+  #dependsOn: Build
   steps: 
     - task: DotNetCoreCLI@2
       displayName: Tests
