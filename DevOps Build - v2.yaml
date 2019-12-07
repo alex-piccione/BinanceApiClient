@@ -63,8 +63,8 @@ jobs:
     - bash: echo "Created package version $(version)"
 
     - task: NuGetCommand@2
-      inputs: 
-        command: "push"
-        packageToPush: "$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg"
-        nuGetFeedType: "external"
-        publishFeedCredentials: "Nuget Alex75"
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Nuget Alex75'
