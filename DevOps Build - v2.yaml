@@ -29,3 +29,15 @@ jobs:
         command: build
         projects: "$(project file)"
         arguments: --configuration Release
+
+- job: Test
+  dependsOn: Build
+  steps: 
+    - task: DotNetCoreCLI@2
+      displayName: Tests
+      inputs:
+        command: test
+        projects: "**/*Tests.*proj"
+        arguments: >
+          --configuration Release 
+          --filter TestCategory!=AFFECT_BALANCE&TestCategory!=REQUIRE_API_KEY
