@@ -1,22 +1,32 @@
 # Alex75.BinanceApiClient
 
-Simple interface to facilitate the use of Binance API.  
+Simple client interface to facilitate the use of some Binance API.   
 
 
-Function                     | Public | Description                                             | Status
----                          |---     |---                                                      |---
-| Get Ticker / Get Tickers   | Yes    | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)	| Done
-| Create Market Order        | No     | Create a market order									| Done
-| Create Limit Order         | No     | Create a limit order									| Not implemented
-| List Open Orders           | No     | List open orders										| Not implemented
-| Check Order Status         | No     |															| Not implemented
-| Cancel Order               | No     | Cancel an order											| Not implemented
-| List User Transactions     | No     | List the User Transactions								| Not implemented
-| Get Balance                | No     | List the availability of all the currencies				| Not implemented
-| Withdraw                   | No     | Withdraw a currency                                     | Done
+[![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
+[![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=13&branchName=master)
 
 
-## XRP
+## Functionalities
+
+Function                     | API Key | Description                                             | Status
+---                          |---      |---                                                      |---
+| Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s) | Done
+| Create Market Order        | Yes     | Create a market order									 | Done
+| Withdraw                   | Yes     | Withdraw a currency                                     | Done
+| Get Balance                | Yes     | List the availability of all the currencies			 | Not implemented
+
+<!--
+| Create Limit Order         | Yes     | Create a limit order									 | Not implemented
+| List Open Orders           | Yes     | List open orders										 | Not implemented
+| Check Order Status         | Yes     |														 | Not implemented
+| Cancel Order               | Yes     | Cancel an order										 | Not implemented
+| List User Transactions     | Yes     | List the User Transactions								 | Not implemented
+-->
+
+
+
+## XRP note
 
 Binance does not offer the pair _XRP/USD_ nor _XRP/EUR_.  
 XRP can only be exchanged using:  

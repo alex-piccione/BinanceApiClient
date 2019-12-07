@@ -46,7 +46,7 @@ type ClientTest () =
         ticker.Ticker.IsSome |> should equal false
 
 
-    [<Test>]
+    [<Test; Category("AFFECT_BALANCE")>]
     member __.``Withdraw XRP`` () =
 
         let address = "" // to be set

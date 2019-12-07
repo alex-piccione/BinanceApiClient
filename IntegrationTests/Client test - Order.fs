@@ -14,7 +14,7 @@ type ClientTest_Order () =
     let settings = settings.readSettings
     let client = Client(settings) :> IClient
 
-    [<Test>]
+    [<Test; Category("AFFECT_BALANCE")>]
     member __.``CreateMarketOrder`` () =
         let pair = CurrencyPair("XRP", "btc")
         let response = client.CreateMarketOrder(pair, OrderSide.Buy, 50m)
@@ -27,7 +27,7 @@ type ClientTest_Order () =
         response.Price |> should be (greaterThan 0)
 
 
-    [<Test>]
+    [<Test; Category("AFFECT_BALANCE")>]
     member __.``CreateLimitOrder`` () =
         let pair = CurrencyPair("XRP", "eur")
         let response = client.CreateLimitOrder(pair, OrderSide.Buy, 50m, 0.50m)
