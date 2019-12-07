@@ -36,9 +36,9 @@ steps:
   displayName: test
   inputs:
     command: test
-    projects: '**/UnitTests.*proj'
-    arguments: '--configuration $(BuildConfiguration)'
-  enabled: false
+    projects: '**/*Tests.*proj'
+    arguments: '--configuration $(BuildConfiguration) --filter TestCategory!=AFFECT_BALANCE'    
+  enabled: true
 
 - task: DotNetCoreCLI@2
   displayName: Create Package (dotnet pack)
