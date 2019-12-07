@@ -6,6 +6,25 @@ variables:
   BuildConfiguration: "Release"
   project file: "Alex75.BinanceApiClient/Alex75.BinanceApiClient.fsproj"
   package version: $(Version.MajorMinor).$(Build.BuildNumber)
+
+jobs:
+
+- job: GetVersion
+  steps:
+    - bash: echo "Get the project Main.Minor version"
+    - task: tmarkovski.projectversionasvariable.versionintovariable.projectversionasvariable@1
+      displayName: 'Get Project Version as variables from $(project file)'
+      inputs:
+        path: '$(project file)'
+
+- job: Build
+  dependsOn: GetVersion
+  steps:
+    - bash: echo "Build the solution $(package version)"
+    - task:
+
+
+<!--
   
 steps:
 
@@ -26,7 +45,7 @@ steps:
 - script: "echo Package version: $(package version)"
 
 - task: DotNetCoreCLI@2
-  displayName: Build project
+  displayName: Build peroject
   inputs:
     projects: "$(project file)"
     arguments: "--configuration $(BuildConfiguration)"
@@ -57,3 +76,5 @@ steps:
     nuGetFeedType: external
     publishFeedCredentials: "Alex75 Nuget"
     versioningScheme: off
+
+-->
