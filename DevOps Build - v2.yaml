@@ -21,14 +21,14 @@ jobs:
 #  steps:
 #    - bash: echo "Build the solution $(package version)"
 
-- job: Build
-  steps:
-    - task: DotNetCoreCLI@2
-      displayName: Build
-      inputs: 
-        command: build
-        projects: "$(project file)"
-        arguments: --configuration Release 
+#- job: Build
+#  steps:
+#    - task: DotNetCoreCLI@2
+#      displayName: Build
+#      inputs: 
+#        command: build
+#        projects: "$(project file)"
+#        arguments: --configuration Release 
 
 - job: Test
   dependsOn: Build
@@ -37,7 +37,8 @@ jobs:
       displayName: Tests
       inputs:
         command: test
-        projects: "**/*Tests.*proj"
+        #projects: "**/*Tests.*proj"
+        projects: "IntegrationTests/IntegrationTests.fsproj"
         arguments: >
           --configuration Release 
           --filter TestCategory!=AFFECT_BALANCE&TestCategory!=REQUIRE_API_KEY
