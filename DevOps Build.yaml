@@ -2,12 +2,12 @@ trigger:
 - master
 
 variables:
+  #base version: "0.5"
   BuildConfiguration: "Release"
   project file: "Alex75.BinanceApiClient/Alex75.BinanceApiClient.fsproj"
   package version: $(Version.MajorMinor).$(Build.BuildNumber)
   
 steps:
-
 
 - script: echo Test Build pipeline
   displayName: test
@@ -36,9 +36,9 @@ steps:
   displayName: test
   inputs:
     command: test
-    projects: '**/*[Te]est*.*proj'
-    arguments: '--configuration $(BuildConfiguration)'
-  enabled: false
+    projects: '**/*Tests.*proj'
+    arguments: '--configuration $(BuildConfiguration) --filter TestCategory!=AFFECT_BALANCE'    
+  enabled: true
 
 - task: DotNetCoreCLI@2
   displayName: Create Package (dotnet pack)
