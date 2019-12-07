@@ -2,6 +2,7 @@ trigger:
 - master
 
 pool:
+  # pre/post build commands require Windows machine
   vmImage: 'windows-latest'
 
 variables:
@@ -24,24 +25,46 @@ jobs:
 #  steps:
 #    - bash: echo "Build the solution $(package version)"
 
-#- job: Build
-#  steps:
-#    - task: DotNetCoreCLI@2
-#      displayName: Build
-#      inputs: 
-#        command: build
-#        projects: "$(project file)"
-#        arguments: --configuration Release 
+- job: Build
+  steps:
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs: 
+        command: build
+        projects: "$(project file)"
+        arguments: --configuration Release 
 
 - job: Test
-  #dependsOn: Build
+  dependsOn: Build
   steps: 
     - task: DotNetCoreCLI@2
       displayName: Tests
       inputs:
         command: test
-        #projects: "**/*Tests.*proj"
         projects: "**/*Tests.*proj"
         arguments: >
           --configuration Release 
           --filter "TestCategory!=AFFECT_BALANCE & TestCategory!=REQUIRE_API_KEY""
+
+- job: package
+  dependsOn: Test
+  variables: 
+  - name: version
+    value: "$(base version).$(Build.BuildNumber)"
+  steps: 
+    - tasks: DotNetCoreCLI@2
+      displayName: "Create package"
+      inputs:
+        command: package
+        packagesToPack: "$(project file)"
+        versioningScheme: byEnvVar
+        versionEnvVar: "version"
+
+    - bash: echo "Created package version $(version)"
+
+    - task: NuGetCommand@2
+      inputs: 
+        command: "push"
+        packageToPush: "$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg"
+        nuGetFeedType: "external"
+        publishFeedCredentials: "Nuget Alex75"
