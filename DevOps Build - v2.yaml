@@ -24,11 +24,11 @@ jobs:
 - job: Build
   steps:
     - task: DotNetCoreCLI@2
-      displayName: Build      
+      displayName: Build
       inputs: 
         command: build
         projects: "$(project file)"
-        arguments: --configuration Release
+        arguments: --configuration Release 
 
 - job: Test
   dependsOn: Build
