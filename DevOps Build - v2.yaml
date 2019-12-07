@@ -23,7 +23,7 @@ jobs:
 
 - job: Build
   steps:
-    - tasks: DotNetCoreCLI@2
+    - task: DotNetCoreCLI@2
       displayName: Build      
       inputs: 
         command: build
