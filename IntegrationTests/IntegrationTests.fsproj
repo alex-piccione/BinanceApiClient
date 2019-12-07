@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RunPostBuildEvent>1</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="pre-build.cmd" />
+    <None Include="post-build.cmd" />
     <None Include="settings.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -32,8 +34,8 @@
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="pre-build.cmd &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot;" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="post-build.cmd &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 
 </Project>
