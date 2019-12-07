@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="post-build.cmd" />
+    <None Include="post-build.bat" />
     <None Include="settings.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -33,5 +33,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call post-build.bat &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
 
 </Project>
