@@ -46,7 +46,7 @@ jobs:
           --configuration Release 
           --filter "TestCategory!=AFFECT_BALANCE & TestCategory!=REQUIRE_API_KEY""
 
-- job: package
+- job: NuGet
   dependsOn: Test
   variables: 
   - name: version
