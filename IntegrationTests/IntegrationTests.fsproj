@@ -34,8 +34,4 @@
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rem post-build.cmd &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot;" />
-  </Target>
-
 </Project>
