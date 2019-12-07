@@ -12,20 +12,28 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="Unquote" Version="5.0.0" />
-    <PackageReference Include="YamlConfig" Version="1.0.18" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="pre-build.cmd" />
     <None Include="settings.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="data\GetExchangeInfo.json" />
+    <Compile Include="parser test.fs" />
     <Compile Include="settings.fs" />
     <Compile Include="Client test.fs" />
     <Compile Include="Client test - Order.fs" />
   </ItemGroup>
 
+  <ItemGroup />
+
   <ItemGroup>
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="pre-build.cmd &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
 
 </Project>

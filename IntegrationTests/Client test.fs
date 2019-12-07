@@ -11,7 +11,7 @@ open Alex75.BinanceApiClient
 [<Category("Client")>]
 type ClientTest () =
 
-    let client = Client(settings.readSettings) :> IClient
+    let client = Client(settings.settings) :> IClient
 
     [<Test>]
     member __.``GetExchangeInfo`` () =
@@ -48,8 +48,9 @@ type ClientTest () =
 
     [<Test; Category("AFFECT_BALANCE")>]
     member __.``Withdraw XRP`` () =
-
-        let address = "" // to be set
+        
+        settings.readSettings() |> ignore
+        let address = settings.withdrawalAddress
         let addressTag = null
         
         
@@ -57,10 +58,10 @@ type ClientTest () =
         let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)
 
         response |> should not' (be null)
-        if not response.IsSuccess then failwith response.Message
+        if not response.IsSuccess then failwith response.Error
 
         
         response.IsSuccess |> should be True
-        response.Id |> should not' (be NullOrEmptyString)
+        response.OperationId |> should not' (be NullOrEmptyString)
 
 

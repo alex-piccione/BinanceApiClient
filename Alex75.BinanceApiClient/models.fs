@@ -104,8 +104,8 @@ type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
         CreateOrderResponse(true, null, orderId, price)
 
 
-type WithdrawResponse(msg:string, success:bool, id:string) =     
-    member __.IsSuccess = success
-    member __.Message = msg
-    member __.Id = id
+type WithdrawResponse(isSuccess:bool, error:string, operationId:string) =     
+    member __.IsSuccess = isSuccess
+    member __.Error = error
+    member __.OperationId = operationId
 

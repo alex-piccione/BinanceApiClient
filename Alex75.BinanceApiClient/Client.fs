@@ -1,21 +1,17 @@
 ﻿namespace Alex75.BinanceApiClient
 
 open System
-open Flurl.Http
-open Alex75.Cryptocurrencies
-open models
 open System.Text
 open System.Security.Cryptography
 open System.Globalization
-open Newtonsoft.Json
-open System.Net.Http
-open System.Xml.Linq
-open Newtonsoft.Json.Linq
+open Newtonsoft.Json; open Newtonsoft.Json.Linq
+open Flurl.Http
+
+open Alex75.Cryptocurrencies
+open models
 
 
-
-
-type public Settings = { TickerCacheDuration:TimeSpan; PublicKey:string; SecretKey:string }
+type public Settings = { TickerCacheDuration:TimeSpan; PublicKey:string; SecretKey:string; }
 
 type CreateOrderPayload = { symbol:string; side:string; ``type``:string; quantity:decimal; timestamp:Int64}
 
@@ -41,7 +37,6 @@ type public Client(settings:Settings) =
     /// </summary>
     /// <param name="key">The secret key</param>
     /// <param name="totalParams">URL Encoded values that would usually be the query string for the request</param>
-    /// <returns></returns>
     let createHMACSignature (privateKey:string, totalParams:string) =    
         let messageBytes = Encoding.UTF8.GetBytes(totalParams)
         let keyBytes = Encoding.UTF8.GetBytes(privateKey)
@@ -110,8 +105,8 @@ type public Client(settings:Settings) =
             with e -> CreateOrderResponse(false, e.Message, 0L, 0m)
 
 
-        member this.CreateLimitOrder(pair: CurrencyPair, side:OrderSide, amount: decimal, price: decimal) = 
-            CreateOrderResponse(false, "not implemented", 0L, 0m)
+        //member this.CreateLimitOrder(pair: CurrencyPair, side:OrderSide, amount: decimal, price: decimal) = 
+        //    CreateOrderResponse(false, "not implemented", 0L, 0m)
 
 
 
@@ -125,7 +120,7 @@ type public Client(settings:Settings) =
                         address
                         (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(addressTag)))
                         (amount.ToString(CultureInfo.InvariantCulture))                        
-                        (10*1000) // 10 seconds
+                        (10*1000) // 10 seconds, a lot !!
                         addressDescription
                         get_timestamp
 
@@ -137,21 +132,32 @@ type public Client(settings:Settings) =
             url <- f"%s?%s" url requestBody
 
             try                
-                let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                                  .WithHeader("Content-Type", "application/x-www-form-urlencoded")
-                                  .AllowHttpStatus("4xx")
-                                  .PostStringAsync("")  // empty because requestBody is only accepted by querystring
-                                  .Result
+                let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                                      .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                                      .AllowHttpStatus("4xx")
+                                      .PostStringAsync("")  // empty because requestBody is only accepted by querystring
+                                      .Result
 
-                let data = response.Content.ReadAsStringAsync().Result
+                let data = httpResponse.Content.ReadAsStringAsync().Result
 
-                if response.IsSuccessStatusCode then                    
+
+                // fucking Binance API returns 200 when the request fail for timestamp not synchronized
+                // so it makes not possible decide which "model" is returned based on the HTTP status
+
+                if httpResponse.IsSuccessStatusCode then                    
                     let json = JsonConvert.DeserializeObject<JObject>(data)
-                    let id = if json.["id"] = null then null else json.["id"].ToString()
-                    WithdrawResponse(json.["msg"].ToString(), json.["success"].Value<bool>(), id)
+
+                    let isSuccess = json.["success"].Value<bool>()
+
+                    if isSuccess then
+                        let id =  json.["id"].Value<string>()
+                        WithdrawResponse(true, null, id)
+                    else 
+                        WithdrawResponse(false, json.["msg"].Value<string>(), null)
+
                 else 
                     let (code, message) = parseErrorResponse data
-                    WithdrawResponse(sprintf "%s: [%s] %s" response.ReasonPhrase code message, false, null)
+                    WithdrawResponse(false, sprintf "%s: [%s] %s" httpResponse.ReasonPhrase code message, null)
 
-            with e -> WithdrawResponse(e.Message, false, null)
+            with e -> WithdrawResponse(false, e.Message, null)
 

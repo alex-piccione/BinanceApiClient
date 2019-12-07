@@ -11,8 +11,7 @@ open Alex75.BinanceApiClient
 [<Category("Client")>]
 type ClientTest_Order () =
 
-    let settings = settings.readSettings
-    let client = Client(settings) :> IClient
+    let client = Client(settings.settings) :> IClient
 
     [<Test; Category("AFFECT_BALANCE")>]
     member __.``CreateMarketOrder`` () =
@@ -27,16 +26,16 @@ type ClientTest_Order () =
         response.Price |> should be (greaterThan 0)
 
 
-    [<Test; Category("AFFECT_BALANCE")>]
-    member __.``CreateLimitOrder`` () =
-        let pair = CurrencyPair("XRP", "eur")
-        let response = client.CreateLimitOrder(pair, OrderSide.Buy, 50m, 0.50m)
+    //[<Test; Category("AFFECT_BALANCE")>]
+    //member __.``CreateLimitOrder`` () =
+    //    let pair = CurrencyPair("XRP", "eur")
+    //    let response = client.CreateLimitOrder(pair, OrderSide.Buy, 50m, 0.50m)
 
 
-        response |> should not' (be null)  
-        if not response.IsSuccess then failwith response.Error
+    //    response |> should not' (be null)  
+    //    if not response.IsSuccess then failwith response.Error
 
-        response.IsSuccess |> should equal true 
+    //    response.IsSuccess |> should equal true 
         
 
 
