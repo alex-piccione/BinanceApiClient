@@ -36,7 +36,7 @@ steps:
   displayName: test
   inputs:
     command: test
-    projects: '**/*[Te]est*.*proj'
+    projects: '**/UnitTests.*proj'
     arguments: '--configuration $(BuildConfiguration)'
   enabled: false
 
