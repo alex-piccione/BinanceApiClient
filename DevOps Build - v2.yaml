@@ -1,6 +1,9 @@
 trigger:
 - master
 
+pool:
+  vmImage: 'windows-latest'
+
 variables:
   base version: "0.5"
   project file: "Alex75.BinanceApiClient/Alex75.BinanceApiClient.fsproj"
