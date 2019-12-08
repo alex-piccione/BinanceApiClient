@@ -46,16 +46,16 @@ jobs:
           --configuration Release 
           --filter "TestCategory!=AFFECT_BALANCE & TestCategory!=REQUIRE_API_KEY""
 
-- job: package
+- job: NuGet
   dependsOn: Test
   variables: 
   - name: version
     value: "$(base version).$(Build.BuildNumber)"
   steps: 
-    - tasks: DotNetCoreCLI@2
+    - task: DotNetCoreCLI@2
       displayName: "Create package"
       inputs:
-        command: package
+        command: pack
         packagesToPack: "$(project file)"
         versioningScheme: byEnvVar
         versionEnvVar: "version"
@@ -63,8 +63,8 @@ jobs:
     - bash: echo "Created package version $(version)"
 
     - task: NuGetCommand@2
-      inputs: 
-        command: "push"
-        packageToPush: "$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg"
-        nuGetFeedType: "external"
-        publishFeedCredentials: "Nuget Alex75"
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'Alex75 Nuget'
