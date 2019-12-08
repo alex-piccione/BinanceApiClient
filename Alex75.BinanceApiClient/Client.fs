@@ -22,8 +22,9 @@ type public Client(settings:Settings) =
     let f = sprintf
     let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
-    let get_timestamp = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
-
+    let get_timestamp () = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
+    // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
+    let recvWindow = 10*1000 // recvWindow cannot exceed 60000. Default: 5000
     
     let parseErrorResponse (responseContent) = 
         // example: {"code":-1021,"msg":"Timestamp for this request is outside of the recvWindow."}
@@ -78,8 +79,8 @@ type public Client(settings:Settings) =
                                (if side = OrderSide.Buy then "BUY" else "SELL") 
                                "MARKET" 
                                (quantity.ToString(CultureInfo.InvariantCulture)) 
-                               get_timestamp
-                               (10*1000)
+                               (get_timestamp())
+                               recvWindow
 
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
@@ -115,14 +116,14 @@ type public Client(settings:Settings) =
             let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
 
             let totalParams = 
-                sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&recvWindow=%i&name=%s&timestamp=%i""" 
+                sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
                         (currency.ToString().ToUpper())
                         address
                         (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(addressTag)))
-                        (amount.ToString(CultureInfo.InvariantCulture))                        
-                        (10*1000) // 10 seconds, a lot !!
+                        (amount.ToString(CultureInfo.InvariantCulture))  
                         addressDescription
-                        get_timestamp
+                        (get_timestamp())
+                        recvWindow
 
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
