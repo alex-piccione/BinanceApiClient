@@ -1,4 +1,4 @@
-# Alex75.BinanceApiClient
+# Binance API Client
 
 Simple client interface to facilitate the use of some Binance API.   
 
