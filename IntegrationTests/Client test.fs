@@ -45,7 +45,7 @@ type ClientTest () =
         ticker.Error |> should not' (be null)
         ticker.Ticker.IsSome |> should equal false
 
-    [<Test; Category("AFFECT_BALANCE"); Category("REQUIRE_KEY")>]
+    [<Test; Category("REQUIRE_API_KEY")>]
     member __.``Get Balance`` () =
         
         settings.readSettings() |> ignore
