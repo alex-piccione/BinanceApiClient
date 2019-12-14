@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
     <Version>0.3</Version>
-    <Authors>Alesandro Piccione</Authors>
+    <Authors>Alessandro Piccione</Authors>
     <Company>DreamSoft</Company>
     <RepositoryUrl>https://github.com/alex75it/Alex75.BinanceApiClient</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

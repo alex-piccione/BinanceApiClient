@@ -21,14 +21,15 @@
     <None Include="settings.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="data\market order response.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\GetExchangeInfo.json" />
     <Compile Include="parser test.fs" />
     <Compile Include="settings.fs" />
     <Compile Include="Client test.fs" />
     <Compile Include="Client test - Order.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />

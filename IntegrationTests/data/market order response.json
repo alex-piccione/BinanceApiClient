@@ -1,0 +1,24 @@
+﻿{
+  "symbol": "XRPBTC",
+  "orderId": 273485283,
+  "orderListId": -1,
+  "clientOrderId": "iTUzfdP6D6ws2GM3ybKopt",
+  "transactTime": 1575819991486,
+  "price": "0.00000000",
+  "origQty": "20.00000000",
+  "executedQty": "20.00000000",
+  "cummulativeQuoteQty": "0.00061340",
+  "status": "FILLED",
+  "timeInForce": "GTC",
+  "type": "MARKET",
+  "side": "SELL",
+  "fills": [
+    {
+      "price": "0.00003067",
+      "qty": "20.00000000",
+      "commission": "0.00000061",
+      "commissionAsset": "BTC",
+      "tradeId": 63061058
+    }
+  ]
+}

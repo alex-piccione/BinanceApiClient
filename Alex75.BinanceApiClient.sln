@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{729321D1-E26B-419E-8CE3-6A1298A017E8}"
 	ProjectSection(SolutionItems) = preProject
 		DevOps Build - v2.yaml = DevOps Build - v2.yaml
-		DevOps Build.yaml = DevOps Build.yaml
 		README.md = README.md
 	EndProjectSection
 EndProject
