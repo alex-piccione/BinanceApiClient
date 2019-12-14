@@ -1,6 +1,7 @@
 ﻿module models
 
 open Alex75.Cryptocurrencies
+open System.Collections.Generic
 
 
 type XrpWallet (address:string, destinationTag:string option) =
@@ -33,8 +34,6 @@ type Ticker_price(bidPrice:decimal, askPrice:decimal) =
   "askQty": "9.00000000"
 }    
 *)
-
-// {"code":-1121,"msg":"Invalid symbol."}
 
 // Binance API response
 type Ticker_24h(code:string, msg:string,
@@ -85,10 +84,16 @@ type Ticker_24h(code:string, msg:string,
 }
 *)
 
+type BalanceResponse(isSuccess, error:string, assets:IDictionary<Currency, decimal>) =
+    inherit Response(isSuccess, error)
+    member __.Assets = assets
+    
+    static member Success assets = new BalanceResponse(true, null, assets)
+    static member Fail error = new BalanceResponse(false, error, null)
+
 
 type CreateOrderResponse(isSuccess:bool, error:string, orderId:int64, price:decimal) =
-    member this.IsSuccess = isSuccess
-    member this.Error = error
+    inherit Response(isSuccess, error)
 
     member this.Id = orderId
     member this.Price = price
@@ -105,7 +110,6 @@ type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
 
 
 type WithdrawResponse(isSuccess:bool, error:string, operationId:string) =     
-    member __.IsSuccess = isSuccess
-    member __.Error = error
+    inherit Response(isSuccess, error)
     member __.OperationId = operationId
 

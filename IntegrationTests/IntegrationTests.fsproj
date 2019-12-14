@@ -21,10 +21,13 @@
     <None Include="settings.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="data\GetExchangeInfo.json" />
+    <Content Include="data\get account data response.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\market order response.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\GetExchangeInfo.json" />
     <Compile Include="parser test.fs" />
     <Compile Include="settings.fs" />
     <Compile Include="Client test.fs" />

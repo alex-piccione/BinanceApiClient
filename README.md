@@ -4,17 +4,17 @@ Simple client interface to facilitate the use of some Binance API.
 
 
 [![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
-[![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=13&branchName=master)
-
+[![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build%20v2?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=22&branchName=master)
 
 ## Functionalities
 
 Function                     | API Key | Description                                             | Status
 ---                          |---      |---                                                      |---
 | Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s) | Done
+| Get Balance                | Yes     | List the availability of all the currencies			 | Done
 | Create Market Order        | Yes     | Create a market order									 | Done
 | Withdraw                   | Yes     | Withdraw a currency                                     | Done
-| Get Balance                | Yes     | List the availability of all the currencies			 | Not implemented
+
 
 <!--
 | Create Limit Order         | Yes     | Create a limit order									 | Not implemented

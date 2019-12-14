@@ -45,21 +45,31 @@ type ClientTest () =
         ticker.Error |> should not' (be null)
         ticker.Ticker.IsSome |> should equal false
 
+    [<Test; Category("AFFECT_BALANCE"); Category("REQUIRE_KEY")>]
+    member __.``Get Balance`` () =
+        
+        settings.readSettings() |> ignore
+       
+        let response = client.GetBalance()
+
+        response |> should not' (be null)
+        if not response.IsSuccess then failwith response.Error
+        
+        response.Assets |> should not' (be Empty)
+
 
     [<Test; Category("AFFECT_BALANCE")>]
     member __.``Withdraw XRP`` () =
         
         settings.readSettings() |> ignore
         let address = settings.withdrawalAddress
-        let addressTag = null
-        
+        let addressTag = null        
         
         // minimum withdrawal = 50 (07/07/2019)
         let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)
 
         response |> should not' (be null)
         if not response.IsSuccess then failwith response.Error
-
         
         response.IsSuccess |> should be True
         response.OperationId |> should not' (be NullOrEmptyString)

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Compile Include="models.fs" />
+    <Compile Include="parser.fs" />
     <Compile Include="cache.fs" />
     <Compile Include="Orders.fs" />
     <Compile Include="IClient.fs" />

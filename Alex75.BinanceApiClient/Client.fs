@@ -33,6 +33,7 @@ type public Client(settings:Settings) =
             (json.["code"].ToString(), json.["msg"].ToString())
         with e -> ("???", responseContent)
 
+  
     /// <summary>
     /// Creates a HMACSHA256 Signature based on the key and total parameters
     /// </summary>
@@ -68,6 +69,24 @@ type public Client(settings:Settings) =
                 if response.IsSuccess then cache.setTicker pair response.Ticker.Value
                 response           
 
+
+        member __.GetBalance(): BalanceResponse = 
+            let url = f"%s/api/v3/account?" baseUrl 
+
+            let parameters = f"timestamp=%i" (get_timestamp())
+            let signature = createHMACSignature(settings.SecretKey, parameters)
+
+            let response = (f"%s?%s&signature=%s" url parameters signature)
+                            .WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                            .AllowAnyHttpStatus().GetAsync().Result
+
+            let jsonContent = response.Content.ReadAsStringAsync().Result
+
+            if not response.IsSuccessStatusCode then
+                let (code, error) = parseErrorResponse jsonContent    
+                BalanceResponse.Fail error
+            else
+                parser.parse_account jsonContent
         
 
         member __.CreateMarketOrder(pair: CurrencyPair, side:OrderSide, quantity: decimal) = 

@@ -12,6 +12,8 @@ type IClient =
     // parsing not implemented yet
     abstract member GetExchangeInfo: string
 
+    abstract member GetBalance: unit -> BalanceResponse
+
     abstract member CreateMarketOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal -> CreateOrderResponse
     //abstract member CreateLimitOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal * price:decimal -> CreateOrderResponse
 
