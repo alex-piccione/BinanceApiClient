@@ -14,7 +14,7 @@ type ClientTest_Order () =
     let client = Client(settings.settings) :> IClient
 
     [<Test; Category("AFFECT_BALANCE")>]
-    member __.``CreateMarketOrder`` () =
+    member __.``CreateMarketOrder Buy 50 XRP with BTC`` () =
         let pair = CurrencyPair("XRP", "btc")
         let response = client.CreateMarketOrder(pair, OrderSide.Buy, 50m)
 
