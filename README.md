@@ -7,7 +7,7 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
 [![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
 [![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build%20v3?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=24&branchName=master) 
-[GitHub commit activity](https://img.shields.io/github/commit-activity/m/alex75it/BinanceApiClient?label=GitHub)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alex75it/BinanceApiClient?label=GitHub)
 
 
 
