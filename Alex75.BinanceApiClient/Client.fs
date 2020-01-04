@@ -22,6 +22,8 @@ type public Client(settings:Settings) =
     let f = sprintf
     let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
+    //let cache = Cache()
+
     let get_timestamp () = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
     let recvWindow = 10*1000 // recvWindow cannot exceed 60000. Default: 5000
