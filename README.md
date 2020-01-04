@@ -2,16 +2,16 @@
 
 Simple client interface to facilitate the use of some Binance API.   
 
-| &nbsp; | &nbsp;
+| <!-- --> | <!-- -->
 | --- | --- 
-| Repository |  ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alex75it/BinanceApiClient?label=GitHub)
+| Repository |  [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alex75it/BinanceApiClient?label=GitHub)]
 | Deploy pipeline |  [![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build%20v3?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=24&branchName=master)
 | NuGet package | [![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
 
 
 ## Functionalities
 
-| Function                     | <nowrap>API Key <sup>(1)</sup></nowrap> | Description                                             | Status
+| Function                   | <nowrap>API Key <sup>(1)</sup></nowrap> | Description           | Status
 ---                          |---      |---                                                      |---
 | Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s) | Done
 | Get Balance                | Yes     | List the availability of all the currencies			 | Done
@@ -48,6 +48,9 @@ Withdraw XRP has a minimum quantity of 25.
 - https://www.binance.com/userCenter/createApi.html
 - https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 
+  
+    
+      
 
 [![HitCount](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient.svg)](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient)
 
@@ -58,5 +61,4 @@ sup { font-size:70% }
 nowrap, .nowrap { white-space: nowrap}
 </style>
 -->
-
 
