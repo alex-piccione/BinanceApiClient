@@ -58,4 +58,4 @@ nowrap, .nowrap { white-space: nowrap}
 </style>
 -->
 <br>
-[![GitHub](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient.svg)]
+[![HitCount](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient.svg)](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient)
