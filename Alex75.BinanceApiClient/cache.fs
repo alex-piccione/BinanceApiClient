@@ -12,9 +12,9 @@ let cache_tickers = ConcurrentDictionary<string, TickerCache>()
 let create_key (pair:CurrencyPair) = sprintf "%O%O" pair.Main pair.Other
 
 let getTicker currency_pair cache_duration = 
-     let found, item = cache_tickers.TryGetValue (create_key currency_pair)
-     if found && (DateTime.UtcNow - item.date) < cache_duration then Some item.ticker
-     else None
+    let found, item = cache_tickers.TryGetValue (create_key currency_pair)
+    if found && (DateTime.UtcNow - item.date) < cache_duration then Some item.ticker
+    else None
 
 let setTicker currency_pair ticker =
 
