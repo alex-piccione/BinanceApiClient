@@ -22,7 +22,7 @@ type public Client(settings:Settings) =
     let f = sprintf
     let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
-    //let cache = Cache()
+    let cache = Cache()
 
     let get_timestamp () = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
@@ -59,7 +59,7 @@ type public Client(settings:Settings) =
 
         member __.GetTicker(pair:CurrencyPair) = 
             
-            let cached_ticker = cache.getTicker pair settings.TickerCacheDuration
+            let cached_ticker = cache.GetTicker pair settings.TickerCacheDuration
             
             match cached_ticker.IsSome with 
             | true -> TickerResponse(true, null, Some(cached_ticker.Value))
@@ -68,7 +68,7 @@ type public Client(settings:Settings) =
                 let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
                 let response = ticker_24h.ToResponse(pair)
-                if response.IsSuccess then cache.setTicker pair response.Ticker.Value
+                if response.IsSuccess then cache.SetTicker response.Ticker.Value
                 response           
 
 

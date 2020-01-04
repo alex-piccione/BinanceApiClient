@@ -18,14 +18,13 @@
   <ItemGroup>
     <Compile Include="models.fs" />
     <Compile Include="parser.fs" />
-    <Compile Include="cache.fs" />
     <Compile Include="Orders.fs" />
     <Compile Include="IClient.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="0.4.1.11" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="0.7.6" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
   </ItemGroup>
 
