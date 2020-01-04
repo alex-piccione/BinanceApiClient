@@ -6,7 +6,7 @@ Simple client interface to facilitate the use of some Binance API.
 
 | <!-- --> | <!-- -->
 | --- | ---
-| Repository | Azure 
+| Repository | GitHub [![HitCount](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient.svg)]
 | Deploy pipeline | [![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build%20v3?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=24&branchName=master)
 | NuGet package | [![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
 
