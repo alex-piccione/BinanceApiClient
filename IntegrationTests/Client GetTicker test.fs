@@ -21,6 +21,9 @@ type ClientTest () =
         ticker |> should not' (be null)
         ticker.Bid |> should not' (equal 0m)
         ticker.Ask |> should not' (equal 0m)
+        ticker.Low.IsSome |> should be True
+        ticker.High.IsSome |> should be True
+        ticker.Last.IsSome |> should be True
 
 
     [<Test>]
