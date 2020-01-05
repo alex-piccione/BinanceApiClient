@@ -21,7 +21,7 @@ type ClientTest () =
         info |> should not' (be null)
 
     [<Test>]
-    member __.``GetTicker `` () =
+    member __.``GetTicker (obsolete)`` () =
         let pair = CurrencyPair("XRP", "btc")
         let ticker = client.GetTicker(pair)
 
@@ -32,6 +32,17 @@ type ClientTest () =
         ticker.Ticker.IsSome |> should equal true
         ticker.Ticker.Value.Bid |> should not' (equal 0m)
         ticker.Ticker.Value.Ask |> should not' (equal 0m)
+
+
+    [<Test>]
+    member __.``GetTicker`` () =
+        let pair = CurrencyPair("XRP", "eur")
+        let ticker = (client :> IApiClient).GetTicker(pair)
+
+        ticker |> should not' (be null)
+
+        ticker.Bid |> should not' (equal 0m)
+        ticker.Ask |> should not' (equal 0m)
 
 
     [<Test>]

@@ -6,6 +6,7 @@ open Alex75.Cryptocurrencies
 
 [<Interface>]
 type IClient =
+    inherit IApiClient
     
     abstract member GetTicker: pair:CurrencyPair -> TickerResponse
 

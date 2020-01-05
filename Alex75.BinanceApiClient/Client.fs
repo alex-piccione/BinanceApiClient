@@ -50,19 +50,26 @@ type public Client(settings:Settings) =
     
 
     interface IClient with
+        member this.GetTicker(pair: CurrencyPair): Ticker = 
+            match cache.GetTicker pair settings.TickerCacheDuration with 
+            | Some ticker -> ticker
+            | _ -> 
+                let url = f"%s//api/v3/ticker/bookTicker?symbol=%s" baseUrl (symbol(pair))
+                //let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
+                let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
+                let response = ticker_24h.ToResponse(pair)
+                if response.IsSuccess then cache.SetTicker response.Ticker.Value
+                response.Ticker.Value    
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v1/exchangeInfo" baseUrl
             let response = url.GetStringAsync().Result
             response
 
-
-        member __.GetTicker(pair:CurrencyPair) = 
-            
-            let cached_ticker = cache.GetTicker pair settings.TickerCacheDuration
-            
-            match cached_ticker.IsSome with 
-            | true -> TickerResponse(true, null, Some(cached_ticker.Value))
+        [<Obsolete("Use the version that returns Ticker")>]
+        member __.GetTicker(pair:CurrencyPair) =             
+            match cache.GetTicker pair settings.TickerCacheDuration with 
+            | Some ticker -> TickerResponse(true, null, Some ticker)
             | _ -> 
                 //let url = f"%s//api/v3/ticker/bookTicker?symbol=%s" baseUrl (symbol(pair))
                 let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
