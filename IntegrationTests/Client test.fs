@@ -35,17 +35,6 @@ type ClientTest () =
 
 
     [<Test>]
-    member __.``GetTicker`` () =
-        let pair = CurrencyPair("XRP", "eur")
-        let ticker = (client :> IApiClient).GetTicker(pair)
-
-        ticker |> should not' (be null)
-
-        ticker.Bid |> should not' (equal 0m)
-        ticker.Ask |> should not' (equal 0m)
-
-
-    [<Test>]
     member __.``GetTicker [when] pair do not exists`` () =
         let pair = CurrencyPair("XRP", "usd")
         let ticker = client.GetTicker(pair)

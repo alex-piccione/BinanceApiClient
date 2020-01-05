@@ -34,6 +34,7 @@
     <Compile Include="settings.fs" />
     <Compile Include="parser test.fs" />
     <Compile Include="Client test.fs" />
+    <Compile Include="Client GetTicker test.fs" />
     <Compile Include="Client test - Order.fs" />
   </ItemGroup>
 

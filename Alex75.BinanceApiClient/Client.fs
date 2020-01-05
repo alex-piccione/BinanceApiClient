@@ -53,13 +53,16 @@ type public Client(settings:Settings) =
         member this.GetTicker(pair: CurrencyPair): Ticker = 
             match cache.GetTicker pair settings.TickerCacheDuration with 
             | Some ticker -> ticker
-            | _ -> 
-                let url = f"%s//api/v3/ticker/bookTicker?symbol=%s" baseUrl (symbol(pair))
-                //let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
+            | _ ->         
+                let url = f"%s/api/v3/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
-                let response = ticker_24h.ToResponse(pair)
-                if response.IsSuccess then cache.SetTicker response.Ticker.Value
-                response.Ticker.Value    
+
+                if ticker_24h.IsSuccess 
+                then
+                    let ticker = Ticker(pair, ticker_24h.BidPrice, ticker_24h.AskPrice, Some ticker_24h.LowPrice, Some ticker_24h.HighPrice, Some ticker_24h.LastPrice)
+                    cache.SetTicker ticker
+                    ticker
+                else failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v1/exchangeInfo" baseUrl
@@ -71,7 +74,6 @@ type public Client(settings:Settings) =
             match cache.GetTicker pair settings.TickerCacheDuration with 
             | Some ticker -> TickerResponse(true, null, Some ticker)
             | _ -> 
-                //let url = f"%s//api/v3/ticker/bookTicker?symbol=%s" baseUrl (symbol(pair))
                 let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
                 let response = ticker_24h.ToResponse(pair)

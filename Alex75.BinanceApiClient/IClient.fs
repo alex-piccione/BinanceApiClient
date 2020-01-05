@@ -8,6 +8,7 @@ open Alex75.Cryptocurrencies
 type IClient =
     inherit IApiClient
     
+    [<System.Obsolete("Use the same function from IApiClient")>]
     abstract member GetTicker: pair:CurrencyPair -> TickerResponse
 
     // parsing not implemented yet
