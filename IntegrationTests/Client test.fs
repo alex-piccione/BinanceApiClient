@@ -58,7 +58,7 @@ type ClientTest () =
         response.Assets |> should not' (be Empty)
 
 
-    [<Test; Category("AFFECT_BALANCE")>]
+    [<Test; Category("SKIP_ON_DEPLOY"); Category("AFFECT_BALANCE")>]
     member __.``Withdraw XRP`` () =
         
         settings.readSettings() |> ignore
@@ -75,3 +75,14 @@ type ClientTest () =
         response.OperationId |> should not' (be NullOrEmptyString)
 
 
+    [<Test; Category("SKIP_ON_DEPLOY"); Category("AFFECT_BALANCE")>]
+    member __.``Withdraw XRP [when] destimation tag is zero`` () =
+
+        settings.readSettings() |> ignore
+        let address = "rGU5P1T5KVhNXUs8RG2c9DkxzopenDmdFj"
+        let addressTag = "0"  
+
+        let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)
+
+        response |> should not' (be null)
+        if not response.IsSuccess then failwith response.Error

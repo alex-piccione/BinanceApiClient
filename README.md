@@ -32,21 +32,13 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
 
 
-## XRP note
-
-Binance does not offer the pair _XRP/USD_ nor _XRP/EUR_ (Dec 2019).  
-XRP can only be exchanged using:  
-- XRP/BTC
-- XRP/ETH
-- TRX/XRP
-- ZXC/XRP
-
-Withdraw XRP has a minimum quantity of 25.
+Withdraw XRP has a minimum quantity of 25.  
+Sell XRP has a minimum quantity of 80 ?!
 
 
 ### Known issues 
 
-Passing the destination tag "0" fails the withdrawal with teh error "Address verification failed"; same behavior on the website.  
+- Unkonown minimum amount for orders.  
 
 
 ## For developers

@@ -60,6 +60,38 @@ type ClientTest_Order () =
         //response.Price |> should be (greaterThan 0) it returns "0"
 
 
+    [<Test; Category("AFFECT_BALANCE")>]
+    member __.``CreateMarketOrder Buy 30 XRP with EUR`` () =
+        let pair = CurrencyPair("xrp", "eur")
+        let amount = 30m  // XRP
+        let response = client.CreateMarketOrder(pair, OrderSide.Buy, amount)
+
+
+        // with 25 {"code":-1013,"msg":"Filter failure: MIN_NOTIONAL"}
+
+        response |> should not' (be null)
+        if not response.IsSuccess then failwith response.Error
+
+        response.IsSuccess |> should equal true
+        response.Id |> should be (greaterThan 0)
+
+
+    [<Test; Category("AFFECT_BALANCE")>]
+    member __.``CreateMarketOrder Sell 80 XRP for EUR`` () =
+        let pair = CurrencyPair("xrp", "eur")
+        let amount = 80m  // XRP
+        let response = client.CreateMarketOrder(pair, OrderSide.Sell, amount)
+
+        // eror with 50 (80 was ok)
+        // with 25 {"code":-1013,"msg":"Filter failure: MIN_NOTIONAL"}
+
+        response |> should not' (be null)
+        if not response.IsSuccess then failwith response.Error
+
+        response.IsSuccess |> should equal true
+        response.Id |> should be (greaterThan 0)
+
+
     //[<Test; Category("AFFECT_BALANCE")>]
     //member __.``CreateLimitOrder`` () =
     //    let pair = CurrencyPair("XRP", "eur")

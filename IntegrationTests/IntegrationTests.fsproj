@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
 
@@ -31,8 +31,8 @@
     <Content Include="data\market order response.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="parser test.fs" />
     <Compile Include="settings.fs" />
+    <Compile Include="parser test.fs" />
     <Compile Include="Client test.fs" />
     <Compile Include="Client test - Order.fs" />
   </ItemGroup>

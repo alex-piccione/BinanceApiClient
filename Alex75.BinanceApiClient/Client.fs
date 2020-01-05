@@ -136,11 +136,14 @@ type public Client(settings:Settings) =
             
             let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
 
+            let mutable normalizedAddressTag = addressTag
+            if currency = Currency.XRP && addressTag = "0" then normalizedAddressTag <- ""
+
             let totalParams = 
                 sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
                         (currency.ToString().ToUpper())
                         address
-                        (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(addressTag)))
+                        (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(normalizedAddressTag)))
                         (amount.ToString(CultureInfo.InvariantCulture))  
                         addressDescription
                         (get_timestamp())
@@ -163,7 +166,7 @@ type public Client(settings:Settings) =
                 let data = httpResponse.Content.ReadAsStringAsync().Result
 
 
-                // fucking Binance API returns 200 when the request fail for timestamp not synchronized
+                // fucking Binance API returns 200 when the request fails for timestamp not synchronized
                 // so it makes not possible decide which "model" is returned based on the HTTP status
 
                 if httpResponse.IsSuccessStatusCode then                    
