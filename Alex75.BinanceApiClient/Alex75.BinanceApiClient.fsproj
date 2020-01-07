@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="0.8.3-alpha" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="0.7.7" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
   </ItemGroup>
 
