@@ -24,32 +24,22 @@ type ClientTest () =
     member __.``GetTicker`` () =
         let pair = CurrencyPair("XRP", "btc")
         let ticker = client.GetTicker(pair)
-
         ticker |> should not' (be null)
-
 
 
     [<Test>]
-    member __.``GetTicker [when] pair do not exists`` () =
-        let pair = CurrencyPair("XRP", "usd")
-        let ticker = client.GetTicker(pair)
-
-        ticker |> should not' (be null)
-
-        ticker.Currencies |> should equal pair
-
+    member __.``GetTicker [when] pair do not exists [should] raise an error`` () =
+        let invalid_pair = CurrencyPair("XRP", "usd")  
+        (fun () -> client.GetTicker(invalid_pair)) 
+        |> should throw typeof<UnsupportedPair>
 
 
     [<Test; Category("REQUIRE_API_KEY")>]
-    member __.``Get Balance`` () =
-        
-        settings.readSettings() |> ignore
-       
+    member __.``Get Balance`` () =        
+        settings.readSettings() |> ignore       
         let response = client.GetBalance()
-
         response |> should not' (be null)
-        if not response.IsSuccess then failwith response.Error
-        
+        if not response.IsSuccess then failwith response.Error        
         response.Assets |> should not' (be Empty)
 
 

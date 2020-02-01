@@ -29,4 +29,4 @@ type ClientTest () =
     [<Test>]
     member __.``GetTicker [when] pair do not exists [should] raise an error`` () =
         let pair = CurrencyPair("XRP", "NNN")
-        (fun () -> client.GetTicker(pair) |> ignore) |> should throw (typeof<Exception>)
+        (fun () -> client.GetTicker(pair) |> ignore) |> should throw (typeof<UnsupportedPair>)

@@ -24,7 +24,6 @@ type public Client(settings:Settings) =
    
     let cache = Cache()
     let assets_cache_time = TimeSpan.FromHours 6.0
-    let ticker_cache_time = TimeSpan.FromSeconds 10.0
     let balance_cache_time = TimeSpan.FromSeconds 30.0
 
     let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
@@ -76,7 +75,10 @@ type public Client(settings:Settings) =
                     let ticker = Ticker(pair, ticker_24h.BidPrice, ticker_24h.AskPrice, Some ticker_24h.LowPrice, Some ticker_24h.HighPrice, Some ticker_24h.LastPrice)
                     cache.SetTicker ticker     
                     ticker
-                else failwith ticker_24h.Error                          
+                else
+                    match ticker_24h.Error with 
+                    | "Invalid symbol." -> raise (UnsupportedPair(pair))
+                    | _ -> failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v1/exchangeInfo" baseUrl
