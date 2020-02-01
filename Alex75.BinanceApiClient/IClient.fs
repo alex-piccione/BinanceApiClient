@@ -1,5 +1,6 @@
 ﻿namespace Alex75.BinanceApiClient
 
+open System.Collections.Generic
 open models
 open Alex75.Cryptocurrencies
 
@@ -7,9 +8,11 @@ open Alex75.Cryptocurrencies
 [<Interface>]
 type IClient =
     inherit IApiClient
+
+    abstract member ListPairs: unit -> ICollection<CurrencyPair>
     
-    [<System.Obsolete("Use the same function from IApiClient")>]
-    abstract member GetTicker: pair:CurrencyPair -> TickerResponse
+    //[<System.Obsolete("Use the same function from IApiClient")>]
+    //abstract member GetTicker: pair:CurrencyPair -> TickerResponse
 
     // parsing not implemented yet
     abstract member GetExchangeInfo: string

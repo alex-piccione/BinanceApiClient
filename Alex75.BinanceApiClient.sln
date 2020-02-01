@@ -5,14 +5,16 @@ VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Alex75.BinanceApiClient", "Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj", "{052A47DE-3A7F-4752-9C8B-D6EB72F98558}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "IntegrationTests", "IntegrationTests\IntegrationTests.fsproj", "{C78DBED8-BA38-4A72-93D1-A83986647E84}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{729321D1-E26B-419E-8CE3-6A1298A017E8}"
 	ProjectSection(SolutionItems) = preProject
 		.azure\pipeline (alpha).yaml = .azure\pipeline (alpha).yaml
 		.azure\pipeline (master).yaml = .azure\pipeline (master).yaml
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "IntegrationTests", "IntegrationTests\IntegrationTests.fsproj", "{4E10B3B2-DDB3-4BCD-B5A4-0D833DEFD716}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "UnitTests", "UnitTests\UnitTests.fsproj", "{08EF267D-95CE-4F9E-9E95-6449306F2DC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +26,14 @@ Global
 		{052A47DE-3A7F-4752-9C8B-D6EB72F98558}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{052A47DE-3A7F-4752-9C8B-D6EB72F98558}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{052A47DE-3A7F-4752-9C8B-D6EB72F98558}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C78DBED8-BA38-4A72-93D1-A83986647E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C78DBED8-BA38-4A72-93D1-A83986647E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C78DBED8-BA38-4A72-93D1-A83986647E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C78DBED8-BA38-4A72-93D1-A83986647E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E10B3B2-DDB3-4BCD-B5A4-0D833DEFD716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E10B3B2-DDB3-4BCD-B5A4-0D833DEFD716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E10B3B2-DDB3-4BCD-B5A4-0D833DEFD716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E10B3B2-DDB3-4BCD-B5A4-0D833DEFD716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08EF267D-95CE-4F9E-9E95-6449306F2DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08EF267D-95CE-4F9E-9E95-6449306F2DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08EF267D-95CE-4F9E-9E95-6449306F2DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08EF267D-95CE-4F9E-9E95-6449306F2DC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

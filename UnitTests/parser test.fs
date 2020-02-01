@@ -1,11 +1,16 @@
-﻿module parser_test
+﻿module  ``unit tests``.parser_test
 
+open System.IO
 open NUnit.Framework; open FsUnit
 open Newtonsoft.Json; open Newtonsoft.Json.Linq
 open Alex75.Cryptocurrencies
 
 
-
+[<Test; Category("parser")>]
+let ``parse pairs``() =
+    let pairs = parser.parse_pairs (File.ReadAllText "data/exchangeInfo.json")
+    pairs |> should contain (CurrencyPair("eth", "btc"))
+        
 
 [<Test; Category("parser")>]
 let ``parse error``() =

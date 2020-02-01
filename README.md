@@ -13,8 +13,9 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
 ## Functionalities
 
-| Function                   | <nowrap>API Key <sup>(1)</sup></nowrap> | Description           | Status
+| Function                   | <nowrap>API Key <sup>(1)</sup></nowrap> | Description             | Status
 ---                          |---      |---                                                      |---
+| List Pairs                 | No      |---                                                      | Done
 | Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s) | Done
 | Get Balance                | Yes     | List the availability of all the currencies			 | Done
 | Create Market Order        | Yes     | Create a market order									 | Done
@@ -38,15 +39,15 @@ Sell XRP has a minimum quantity of 80 ?!
 
 ### Known issues 
 
-- Unkonown minimum amount for orders.  
+- Minimum amount for orders is unknown
 
 
 ## For developers
 
-Source code on GitHub.
+Source code on GitHub.  
+CI
 
-- https://www.binance.com/userCenter/createApi.html
-- https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+Binance API docs: https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 
   
       

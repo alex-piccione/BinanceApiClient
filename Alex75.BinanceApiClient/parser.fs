@@ -6,6 +6,14 @@ open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open models
 
+let parse_pairs jsonString =
+    let json = JsonConvert.DeserializeObject<JObject>(jsonString)      
+    let pairs = List<CurrencyPair>()
+    for item in json.["symbols"].Value<JToken>() do
+        let b = item.["baseAsset"].Value<string>()
+        let q = item.["quoteAsset"].Value<string>()
+        pairs.Add(CurrencyPair(b, q))
+    pairs
 
 
 let parse_account jsonString = 

@@ -2,13 +2,14 @@
 
 open System
 open System.Text
+open System.Collections.Generic
 open System.Security.Cryptography
 open System.Globalization
 open Newtonsoft.Json; open Newtonsoft.Json.Linq
 open Flurl.Http
-
 open Alex75.Cryptocurrencies
 open models
+
 
 
 type public Settings = { TickerCacheDuration:TimeSpan; PublicKey:string; SecretKey:string; }
@@ -20,9 +21,13 @@ type public Client(settings:Settings) =
 
     let baseUrl = "https://api.binance.com"
     let f = sprintf
-    let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
-
+   
     let cache = Cache()
+    let assets_cache_time = TimeSpan.FromHours 6.0
+    let ticker_cache_time = TimeSpan.FromSeconds 10.0
+    let balance_cache_time = TimeSpan.FromSeconds 30.0
+
+    let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
 
     let get_timestamp () = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
@@ -50,6 +55,15 @@ type public Client(settings:Settings) =
     
 
     interface IClient with
+
+        member this.ListPairs()  = 
+            match cache.GetPairs assets_cache_time with
+            | Some pairs -> pairs
+            | _ -> 
+                let pairs = parser.parse_pairs ( (f"%s/api/v3/exchangeInfo" baseUrl).GetStringAsync().Result )
+                cache.SetPairs pairs
+                pairs :> ICollection<CurrencyPair>   
+
         member this.GetTicker(pair: CurrencyPair): Ticker = 
             match cache.GetTicker pair settings.TickerCacheDuration with 
             | Some ticker -> ticker
@@ -69,16 +83,16 @@ type public Client(settings:Settings) =
             let response = url.GetStringAsync().Result
             response
 
-        [<Obsolete("Use the version that returns Ticker")>]
-        member __.GetTicker(pair:CurrencyPair) =             
-            match cache.GetTicker pair settings.TickerCacheDuration with 
-            | Some ticker -> TickerResponse(true, null, Some ticker)
-            | _ -> 
-                let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
-                let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
-                let response = ticker_24h.ToResponse(pair)
-                if response.IsSuccess then cache.SetTicker response.Ticker.Value |> ignore
-                response           
+        //[<Obsolete("Use the version that returns Ticker")>]
+        //member __.GetTicker(pair:CurrencyPair) =             
+        //    match cache.GetTicker pair settings.TickerCacheDuration with 
+        //    | Some ticker -> TickerResponse(true, null, Some ticker)
+        //    | _ -> 
+        //        let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
+        //        let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
+        //        let response = ticker_24h.ToResponse(pair)
+        //        if response.IsSuccess then cache.SetTicker response.Ticker.Value |> ignore
+        //        response           
 
 
         member __.GetBalance(): BalanceResponse = 
