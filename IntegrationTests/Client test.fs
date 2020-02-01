@@ -21,17 +21,12 @@ type ClientTest () =
         info |> should not' (be null)
 
     [<Test>]
-    member __.``GetTicker (obsolete)`` () =
+    member __.``GetTicker`` () =
         let pair = CurrencyPair("XRP", "btc")
         let ticker = client.GetTicker(pair)
 
         ticker |> should not' (be null)
 
-        //ticker.IsSuccess |> should equal true
-        //ticker.Error |> should be null
-        //ticker.Ticker.IsSome |> should equal true
-        //ticker.Ticker.Value.Bid |> should not' (equal 0m)
-        //ticker.Ticker.Value.Ask |> should not' (equal 0m)
 
 
     [<Test>]
@@ -43,9 +38,7 @@ type ClientTest () =
 
         ticker.Currencies |> should equal pair
 
-        //ticker.IsSuccess |> should be False
-        //ticker.Error |> should not' (be null)
-        //ticker.Ticker.IsSome |> should equal false
+
 
     [<Test; Category("REQUIRE_API_KEY")>]
     member __.``Get Balance`` () =

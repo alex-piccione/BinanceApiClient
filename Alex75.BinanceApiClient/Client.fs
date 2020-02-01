@@ -82,19 +82,8 @@ type public Client(settings:Settings) =
             let url = f"%s/api/v1/exchangeInfo" baseUrl
             let response = url.GetStringAsync().Result
             response
-
-        //[<Obsolete("Use the version that returns Ticker")>]
-        //member __.GetTicker(pair:CurrencyPair) =             
-        //    match cache.GetTicker pair settings.TickerCacheDuration with 
-        //    | Some ticker -> TickerResponse(true, null, Some ticker)
-        //    | _ -> 
-        //        let url = f"%s/api/v1/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
-        //        let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
-        //        let response = ticker_24h.ToResponse(pair)
-        //        if response.IsSuccess then cache.SetTicker response.Ticker.Value |> ignore
-        //        response           
-
-
+                  
+      
         member __.GetBalance(): BalanceResponse = 
             let url = f"%s/api/v3/account?" baseUrl 
 

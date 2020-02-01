@@ -21,7 +21,7 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 | Create Market Order        | Yes     | Create a market order									 | Done
 | Withdraw                   | Yes     | Withdraw a currency                                     | Done
 
-<sup>(1)</sup> = Require an Account API key
+<sup>(1)</sup> = Requires an Account API key
 
 <!--
 | Create Limit Order         | Yes     | Create a limit order									 | Not implemented
@@ -45,8 +45,8 @@ Sell XRP has a minimum quantity of 80 ?!
 ## For developers
 
 Source code on GitHub.  
-CI/DD in GitLab.
-
+CI/DD in Azure DevOps.  
+  
 Binance API docs: https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 
   
