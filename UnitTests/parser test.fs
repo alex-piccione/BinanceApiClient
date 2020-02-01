@@ -1,4 +1,5 @@
-﻿module  ``unit tests``.parser_test
+﻿//module  ``unit tests``.parser_test
+module parser_test
 
 open System.IO
 open NUnit.Framework; open FsUnit
