@@ -45,7 +45,7 @@ Sell XRP has a minimum quantity of 80 ?!
 ## For developers
 
 Source code on GitHub.  
-CI
+CI/DD in GitLab.
 
 Binance API docs: https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
 
