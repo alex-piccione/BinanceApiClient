@@ -1,20 +1,17 @@
 ﻿namespace Alex75.BinanceApiClient
 
-open System.Collections.Generic
-open models
+open System
 open Alex75.Cryptocurrencies
+open models
+
 
 
 [<Interface>]
 type IClient =
-    inherit IApiClient
-
-    abstract member ListPairs: unit -> ICollection<CurrencyPair>
-    
+    inherit IApiClientPrivate
+  
     // parsing not implemented yet
     abstract member GetExchangeInfo: string
-
-    abstract member GetBalance: unit -> BalanceResponse
 
     abstract member CreateMarketOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal -> CreateOrderResponse
     //abstract member CreateLimitOrder: pair:CurrencyPair * operation:OrderSide * amount:decimal * price:decimal -> CreateOrderResponse

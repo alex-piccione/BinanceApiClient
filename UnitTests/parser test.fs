@@ -1,6 +1,7 @@
 ﻿//module  ``unit tests``.parser_test
 module parser_test
 
+open System.Linq
 open System.IO
 open NUnit.Framework; open FsUnit
 open Newtonsoft.Json; open Newtonsoft.Json.Linq
@@ -31,13 +32,13 @@ let ``parse error``() =
 [<Test; Category("parser")>]
 let ``parse account response`` () =
 
-    let jsonString = System.IO.File.ReadAllText "data/get account data response.json"
+    let jsonString = System.IO.File.ReadAllText "data/account data.json"
 
-    let response = parser.parse_account jsonString
+    let balance = parser.parse_account jsonString
 
-    response |> should not' (be null)
-    response.IsSuccess |> should be True
-    response.Error |> should be null
-
-    response.Assets.[Currency.BTC] |> should equal (4723846.89208129m + 10m)
-    response.Assets.[Currency.LTC] |> should equal (4763368.68006011m + 20m)
+    balance |> should not' (be null)
+    balance.HasCurrency("btc") |> should be True
+    balance.[Currency.BTC].AvailableAmount |> should equal 4723846.89208129 
+    balance.[Currency.BTC].OwnedAmount |> should equal (4723846.89208129 + 10.0)
+    //[Currency.BTC] |> should equal (4723846.89208129m + 10m)
+    //response.Assets.[Currency.LTC] |> should equal (4763368.68006011m + 20m)

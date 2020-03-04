@@ -10,7 +10,7 @@ open Alex75.BinanceApiClient
 [<Category("Client")>]
 type ClientTest () =
 
-    let client = Client(settings.settings) :> IApiClient
+    let client = Client(settings.settings) :> IApiClientPrivate
 
 
     [<Test>]

@@ -32,13 +32,6 @@ type public Client(settings:Settings) =
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
     let recvWindow = 10*1000 // recvWindow cannot exceed 60000. Default: 5000
     
-    let parseErrorResponse (responseContent) = 
-        // example: {"code":-1021,"msg":"Timestamp for this request is outside of the recvWindow."}
-        try
-            let json = JsonConvert.DeserializeObject<JObject>(responseContent)
-            (json.["code"].ToString(), json.["msg"].ToString())
-        with e -> ("???", responseContent)
-
   
     /// <summary>
     /// Creates a HMACSHA256 Signature based on the key and total parameters
@@ -81,29 +74,36 @@ type public Client(settings:Settings) =
                     | _ -> failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
-            let url = f"%s/api/v1/exchangeInfo" baseUrl
+            let url = f"%s/api/v3/exchangeInfo" baseUrl
+            // todo: parsing not implemented yet
             let response = url.GetStringAsync().Result
             response
+
+
+
+        member this.GetBalance(): AccountBalance = 
+
+            match cache.GetAccountBalance balance_cache_time with
+            | Some balance -> balance
+            | _ -> 
+                let url = f"%s/api/v3/account?" baseUrl 
+
+                let parameters = f"timestamp=%i" (get_timestamp())
+                let signature = createHMACSignature(settings.SecretKey, parameters)
+
+                let response = (f"%s?%s&signature=%s" url parameters signature)
+                                .WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                                .AllowAnyHttpStatus().GetAsync().Result
+                let jsonContent = response.Content.ReadAsStringAsync().Result
+
+                if response.IsSuccessStatusCode then 
+                    let balance = parser.parse_account jsonContent
+                    cache.SetAccountBalance balance
+                    balance
+                else failwith (parser.parse_error jsonContent)
                   
       
-        member __.GetBalance(): BalanceResponse = 
-            let url = f"%s/api/v3/account?" baseUrl 
-
-            let parameters = f"timestamp=%i" (get_timestamp())
-            let signature = createHMACSignature(settings.SecretKey, parameters)
-
-            let response = (f"%s?%s&signature=%s" url parameters signature)
-                            .WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                            .AllowAnyHttpStatus().GetAsync().Result
-
-            let jsonContent = response.Content.ReadAsStringAsync().Result
-
-            if not response.IsSuccessStatusCode then
-                let (code, error) = parseErrorResponse jsonContent    
-                BalanceResponse.Fail error
-            else
-                parser.parse_account jsonContent
-        
+      
 
         member __.CreateMarketOrder(pair: CurrencyPair, side:OrderSide, quantity: decimal) = 
             
@@ -127,16 +127,16 @@ type public Client(settings:Settings) =
                                   .PostStringAsync(requestBody)
                                   .Result
 
-                let data = response.Content.ReadAsStringAsync().Result
+                let content = response.Content.ReadAsStringAsync().Result
 
                 if response.IsSuccessStatusCode then                    
-                    let apiResponse = JsonConvert.DeserializeObject<models.BinanceOrderFullResponse>(data)
+                    let apiResponse = JsonConvert.DeserializeObject<models.BinanceOrderFullResponse>(content)
                     apiResponse.ToResponse()
                 else 
-                    let (code, message) = parseErrorResponse data
+                    let error = parser.parse_error content
                     //match code with 
                     //| -1121 -> message = currencypair not tradable
-                    CreateOrderResponse(false, sprintf "%s: [%s] %s" response.ReasonPhrase code message, 0L, 0m)
+                    CreateOrderResponse(false, sprintf "%s: %s" response.ReasonPhrase error, 0L, 0m)
 
             with e -> CreateOrderResponse(false, e.Message, 0L, 0m)
 
@@ -177,14 +177,14 @@ type public Client(settings:Settings) =
                                       .PostStringAsync("")  // empty because requestBody is only accepted by querystring
                                       .Result
 
-                let data = httpResponse.Content.ReadAsStringAsync().Result
+                let content = httpResponse.Content.ReadAsStringAsync().Result
 
 
                 // fucking Binance API returns 200 when the request fails for timestamp not synchronized
                 // so it makes not possible decide which "model" is returned based on the HTTP status
 
                 if httpResponse.IsSuccessStatusCode then                    
-                    let json = JsonConvert.DeserializeObject<JObject>(data)
+                    let json = JsonConvert.DeserializeObject<JObject>(content)
 
                     let isSuccess = json.["success"].Value<bool>()
 
@@ -195,8 +195,8 @@ type public Client(settings:Settings) =
                         WithdrawResponse(false, json.["msg"].Value<string>(), null)
 
                 else 
-                    let (code, message) = parseErrorResponse data
-                    WithdrawResponse(false, sprintf "%s: [%s] %s" httpResponse.ReasonPhrase code message, null)
+                    let error = parser.parse_error content
+                    WithdrawResponse(false, sprintf "%s: %s" httpResponse.ReasonPhrase error, null)
 
             with e -> WithdrawResponse(false, e.Message, null)
 
