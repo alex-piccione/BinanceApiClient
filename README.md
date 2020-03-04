@@ -13,15 +13,21 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
 ## Functionalities
 
-| Function                   | <nowrap>API Key <sup>(1)</sup></nowrap> | Description             | Status
----                          |---      |---                                                      |---
-| List Pairs                 | No      |---                                                      | Done
-| Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s) | Done
-| Get Balance                | Yes     | List the availability of all the currencies			 | Done
-| Create Market Order        | Yes     | Create a market order									 | Done
-| Withdraw                   | Yes     | Withdraw a currency                                     | Done
+| Function                   | <nowrap>API Key <sup>(1)</sup></nowrap> | Description                         | Status
+---                          |---      |---                                                                  |---
+| List Pairs                 | No      |---                                                                  | Done
+| Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)             | Done
+| Get Balance (modified)     | Yes     | List the owned and free amount of all the not empty currencies  	 | Done
+| Create Market Order        | Yes     | Create a market order									             | Done
+| Withdraw                   | Yes     | Withdraw a currency                                                 | Done
 
 <sup>(1)</sup> = Requires an Account API key
+
+
+> Note  
+> **GetBalance** changed from the previous minor version **0.8**
+> Now it returns a list and does not have the properties IsSuccess and Error anymore  
+> The old version is renamed *GetBalance_old*.
 
 <!--
 | Create Limit Order         | Yes     | Create a limit order									 | Not implemented
@@ -35,6 +41,12 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
 Withdraw XRP has a minimum quantity of 25.  
 Sell XRP has a minimum quantity of 80 ?!
+
+### Withdrawal Suspension
+
+From time to time the withdrawal on a particular wallet can be suspended (for maintenance).  
+This is the error message: "The current currency is not open for withdrawal".  
+I don't know what HTTP Status Code is returned.  
 
 
 ### Known issues 
