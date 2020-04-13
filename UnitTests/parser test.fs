@@ -37,7 +37,7 @@ let ``parse account response`` () =
     let balance = parser.parse_account jsonString
 
     balance |> should not' (be null)
-    balance.HasCurrency("btc") |> should be True
+    balance.HasCurrency(Currency.BTC) |> should be True
     balance.[Currency.BTC].AvailableAmount |> should equal 4723846.89208129 
     balance.[Currency.BTC].OwnedAmount |> should equal (4723846.89208129 + 10.0)
     //[Currency.BTC] |> should equal (4723846.89208129m + 10m)

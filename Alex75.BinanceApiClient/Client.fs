@@ -48,6 +48,9 @@ type public Client(settings:Settings) =
 
     interface IClient with
 
+        member this.ListOpenOrders(): ICollection<OpenOrder> = 
+            raise (System.NotImplementedException())
+
         member this.ListPairs()  = 
             match cache.GetPairs assets_cache_time with
             | Some pairs -> pairs
