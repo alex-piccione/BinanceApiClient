@@ -1,4 +1,6 @@
-﻿module parser
+﻿module internal parser
+
+[<assembly:System.Runtime.CompilerServices.InternalsVisibleTo("UnitTests")>] do()
 
 open System.Collections.Generic
 open Alex75.Cryptocurrencies
@@ -11,7 +13,7 @@ let parse_error jsonString =
     try
         let json = JsonConvert.DeserializeObject<JObject>(jsonString)
         //(json.["code"].ToString(), json.["msg"].ToString())
-        json.["msg"].ToString()
+        sprintf "%s (code: %s)" (json.["msg"].ToString()) (json.["code"].ToString())
     with e -> jsonString
 
 

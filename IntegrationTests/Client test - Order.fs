@@ -13,7 +13,7 @@ type ClientTest_Order () =
 
     let client = Client(settings.settings) :> IClient
 
-    [<Test; Category("AFFECT_BALANCE")>]
+    [<Test; Category("AFFECTS_BALANCE")>]
     member __.``CreateMarketOrder Buy 50 XRP with BTC`` () =
         let pair = CurrencyPair("XRP", "btc")
         let response = client.CreateMarketOrder(pair, OrderSide.Buy, 50m)
@@ -25,7 +25,7 @@ type ClientTest_Order () =
         response.Id |> should be (greaterThan 0)
         response.Price |> should be (greaterThan 0)
 
-    //[<Test; Category("AFFECT_BALANCE")>]
+    //[<Test; Category("AFFECTS_BALANCE")>]
     //member __.``CreateMarketOrder Buy BTC with 20 XRP`` () =
 
     // the pair BTC/XRP does not exists, this order must be executed on the other way (Sell XRP for BTC)
@@ -43,7 +43,7 @@ type ClientTest_Order () =
         //response.Id |> should be (greaterThan 0)
         //response.Price |> should be (greaterThan 0)
 
-    [<Test; Category("AFFECT_BALANCE")>]
+    [<Test; Category("AFFECTS_BALANCE")>]
     member __.``CreateMarketOrder Sell 20 XRP for BTC`` () =
         //let pair = CurrencyPair("btc", "xrp") invalid symbol
         let pair = CurrencyPair("xrp", "btc")
@@ -60,7 +60,7 @@ type ClientTest_Order () =
         //response.Price |> should be (greaterThan 0) it returns "0"
 
 
-    [<Test; Category("AFFECT_BALANCE")>]
+    [<Test; Category("AFFECTS_BALANCE")>]
     member __.``CreateMarketOrder Buy 30 XRP with EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 30m  // XRP
@@ -76,7 +76,7 @@ type ClientTest_Order () =
         response.Id |> should be (greaterThan 0)
 
 
-    [<Test; Category("AFFECT_BALANCE")>]
+    [<Test; Category("AFFECTS_BALANCE")>]
     member __.``CreateMarketOrder Sell 80 XRP for EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 80m  // XRP
@@ -92,7 +92,7 @@ type ClientTest_Order () =
         response.Id |> should be (greaterThan 0)
 
 
-    //[<Test; Category("AFFECT_BALANCE")>]
+    //[<Test; Category("AFFECTS_BALANCE")>]
     //member __.``CreateLimitOrder`` () =
     //    let pair = CurrencyPair("XRP", "eur")
     //    let response = client.CreateLimitOrder(pair, OrderSide.Buy, 50m, 0.50m)
