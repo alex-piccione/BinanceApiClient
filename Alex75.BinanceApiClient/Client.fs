@@ -105,47 +105,43 @@ type public Client(settings:Settings) =
                     balance
                 else failwith (parser.parse_error jsonContent)
                   
-      
-      
 
-        member __.CreateMarketOrder(pair: CurrencyPair, side:OrderSide, quantity: decimal) = 
+        member this.CreateMarketOrder(request: CreateOrderRequest): CreateOrderResult = 
             
             let url = f"%s/api/v3/order" baseUrl           
             
             let totalParams = f"""symbol=%s&side=%s&type=%s&quantity=%s&timestamp=%i&recvWindow=%i"""
-                               (symbol pair) 
-                               (if side = OrderSide.Buy then "BUY" else "SELL") 
+                               (symbol request.Pair) 
+                               (if request.Side = OrderSide.Buy then "BUY" else "SELL") 
                                "MARKET" 
-                               (quantity.ToString(CultureInfo.InvariantCulture)) 
+                               (request.BuyOrSellQuantity.ToString(CultureInfo.InvariantCulture)) 
                                (get_timestamp())
                                recvWindow
 
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
             
-            try
-                let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                                  .WithHeader("Content-Type", "application/x-www-form-urlencoded")
-                                  .AllowHttpStatus("4xx")
-                                  .PostStringAsync(requestBody)
-                                  .Result
+            //try
+            let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                                .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                                .AllowHttpStatus("4xx")
+                                .PostStringAsync(requestBody)
+                                .Result
 
-                let content = response.Content.ReadAsStringAsync().Result
+            let content = response.Content.ReadAsStringAsync().Result
 
-                if response.IsSuccessStatusCode then                    
-                    let apiResponse = JsonConvert.DeserializeObject<models.BinanceOrderFullResponse>(content)
-                    apiResponse.ToResponse()
-                else 
-                    let error = parser.parse_error content
-                    //match code with 
-                    //| -1121 -> message = currencypair not tradable
-                    CreateOrderResponse(false, sprintf "%s: %s" response.ReasonPhrase error, 0L, 0m)
-
-            with e -> CreateOrderResponse(false, e.Message, 0L, 0m)
+            if response.IsSuccessStatusCode then      
+                let orderId, price = parser.ParseCreateOrderResponse(content)
+                { reference=orderId; price=price}
+            else 
+                let error = parser.parse_error content
+                //match code with 
+                //| -1121 -> message = currencypair not tradable
+                failwithf "%s: %s" response.ReasonPhrase error
 
 
-        //member this.CreateLimitOrder(pair: CurrencyPair, side:OrderSide, amount: decimal, price: decimal) = 
-        //    CreateOrderResponse(false, "not implemented", 0L, 0m)
+        member this.CreateLimitOrder(request: CreateOrderRequest): string = 
+            raise (System.NotImplementedException())
 
 
 

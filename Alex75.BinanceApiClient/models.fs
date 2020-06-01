@@ -92,21 +92,20 @@ type BalanceResponse(isSuccess, error:string, assets:IDictionary<Currency, decim
     static member Fail error = new BalanceResponse(false, error, null)
 
 
-type CreateOrderResponse(isSuccess:bool, error:string, orderId:int64, price:decimal) =
-    inherit Response(isSuccess, error)
+//type CreateOrderResponse(isSuccess:bool, error:string, orderId:int64, price:decimal) =
+//    inherit Response(isSuccess, error)
 
-    member this.Id = orderId
-    member this.Price = price
+//    member this.Id = orderId
+//    member this.Price = price
 
 
 // Binance API response
-type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
+//type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
     //member this.Id = orderId
     //member this.Price = price
 
-    member __.ToResponse () =
-
-        CreateOrderResponse(true, null, orderId, price)
+    //member __.ToResponse () =
+    //    CreateOrderResponse(true, null, orderId, price)
 
 
 type WithdrawResponse(isSuccess:bool, error:string, operationId:string) =     

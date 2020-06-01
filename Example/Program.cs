@@ -27,11 +27,9 @@ namespace Example
         {
             try
             {
-                var response = client.CreateMarketOrder(pair, OrderSide.Buy, amount);
-                if(!response.IsSuccess)
-                    Console.WriteLine("Failed to create market order. " + response.Error);
-                else
-                    Console.WriteLine($"Created market order. Id: {response.Id} Price: {response.Price}");
+                var result = client.CreateMarketOrder(CreateOrderRequest.Market(OrderSide.Buy, pair, amount));
+
+                Console.WriteLine($"Created market order. Reference: {result.reference} Price: {result.price}");
             }
             catch (Exception exc)
             {

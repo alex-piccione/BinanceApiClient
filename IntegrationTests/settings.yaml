@@ -1,8 +1,5 @@
-﻿Note: >
-  This file is overwritten in the bin/<configuration> folder on every build by the settings.secret.yaml file, if exists
-  Use the settings.sexret.yaml to store real private key/data and NEVER add it to the repository
-
-TickerCacheDuration: 20
+﻿TickerCacheDuration: 20
 PublicKey: "*****"
 SecretKey: "*****"
+# used for resting withdrawall
 withdrawal address: r000000

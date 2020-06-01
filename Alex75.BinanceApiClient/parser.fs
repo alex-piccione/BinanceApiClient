@@ -50,3 +50,6 @@ let parse_account_old jsonString =
     BalanceResponse(true, null, assets)    
 
 
+let ParseCreateOrderResponse jsonString =
+    let json = JsonConvert.DeserializeObject<JObject>(jsonString) 
+    (json.["OrderId"].Value<string>(), json.["price"].Value<decimal>())
