@@ -30,3 +30,13 @@ type ClientTest_ListOrders () =
             CurrencyPair("AAA", "BBB")
         |])
         orders |> should not' (be Null)      
+
+
+    [<Test>]
+    member this.``List Closed Orders`` () =
+        let orders = client.ListClosedOrders([|
+            //CurrencyPair.ADA_BTC
+            //CurrencyPair.BTC_EUR
+            CurrencyPair("TRX", "XRP")
+        |])
+        orders |> should not' (be Null)   

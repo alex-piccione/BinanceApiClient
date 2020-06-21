@@ -2,6 +2,7 @@
 
 open Alex75.Cryptocurrencies
 open System.Collections.Generic
+open System
 
 
 type XrpWallet (address:string, destinationTag:string option) =
@@ -92,23 +93,13 @@ type BalanceResponse(isSuccess, error:string, assets:IDictionary<Currency, decim
     static member Fail error = new BalanceResponse(false, error, null)
 
 
-//type CreateOrderResponse(isSuccess:bool, error:string, orderId:int64, price:decimal) =
-//    inherit Response(isSuccess, error)
-
-//    member this.Id = orderId
-//    member this.Price = price
-
-
-// Binance API response
-//type internal BinanceOrderFullResponse(orderId:int64, price:decimal) =
-    //member this.Id = orderId
-    //member this.Price = price
-
-    //member __.ToResponse () =
-    //    CreateOrderResponse(true, null, orderId, price)
-
-
 type WithdrawResponse(isSuccess:bool, error:string, operationId:string) =     
     inherit Response(isSuccess, error)
     member __.OperationId = operationId
 
+
+type Withdrawal(date:DateTime, currency:Currency, amount:decimal, destination:string) =
+    member this.Date = date
+    member this.Currency = currency
+    member this.Anmount = amount
+    member this.Destination = destination

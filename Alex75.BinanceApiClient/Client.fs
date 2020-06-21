@@ -36,7 +36,7 @@ type public Client(settings:Settings) =
 
     let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
 
-    let get_timestamp () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
+    let getServerTime () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
     let recvWindow = 15*1000 // recvWindow cannot exceed 60000. Default: 5000
     
@@ -53,8 +53,8 @@ type public Client(settings:Settings) =
         let computedHash = hash.ComputeHash(messageBytes)
         BitConverter.ToString(computedHash).Replace("-", "").ToLower()
 
-    let httpGet url querystring =
-        let parameters = f"%s&timestamp=%i" querystring (get_timestamp())
+    let httpGet url querystring serverTime =
+        let parameters = f"%s&timestamp=%i" querystring serverTime // (getServerTime())
         let signature = createHMACSignature(settings.SecretKey, parameters)
 
         let response = (f"%s?%s&signature=%s" url parameters signature)
@@ -107,7 +107,7 @@ type public Client(settings:Settings) =
             | _ -> 
                 let url = f"%s/api/v3/account?" baseUrl 
 
-                let parameters = f"timestamp=%i" (get_timestamp())
+                let parameters = f"timestamp=%i" (getServerTime())
                 let signature = createHMACSignature(settings.SecretKey, parameters)
 
                 let response = (f"%s?%s&signature=%s" url parameters signature)
@@ -131,7 +131,7 @@ type public Client(settings:Settings) =
                                (if request.Side = OrderSide.Buy then "BUY" else "SELL") 
                                "MARKET" 
                                (request.BuyOrSellQuantity.ToString(CultureInfo.InvariantCulture)) 
-                               (get_timestamp())
+                               (getServerTime())
                                recvWindow
 
             let signature = createHMACSignature(settings.SecretKey, totalParams)
@@ -177,8 +177,9 @@ type public Client(settings:Settings) =
             // The API allows to not specify the symbol but the call costs 40 times the single symbol call
 
             let orders = System.Collections.Concurrent.ConcurrentBag()
+            let serverTime = getServerTime()  // it's ok to use the same ?
             let getOrders pair =
-                let (response, jsonString, error) = httpGet (f"%s/api/v3/openOrders" baseUrl) (f"symbol=%s" (getSymbol pair))
+                let (response, jsonString, error) = httpGet (f"%s/api/v3/openOrders" baseUrl) (f"symbol=%s" (getSymbol pair)) serverTime
                 if response.IsSuccessStatusCode then 
                     orders.Add(parser.ParseOpenOrders pair jsonString)
                 else failwithf "Failed to retrieve orders for \"%O\". %s" pair error
@@ -186,6 +187,26 @@ type public Client(settings:Settings) =
             Parallel.ForEach(validPairs, getOrders) |> ignore
             orders.ToArray() |> Array.fold Array.append Array.empty<OpenOrder>
 
+        member this.ListClosedOrders(pairs: CurrencyPair[]): ClosedOrder[] = 
+            checkApiKeys()
+
+            // todo: purge from invalid pairs        
+            let validPairs = 
+                (this :> IClient).ListPairs().ToArray()
+                |> Array.filter (fun pair -> (pairs |> Array.contains pair))
+
+            let limit = 100
+            let orders = System.Collections.Concurrent.ConcurrentBag()
+            let serverTime = getServerTime()  // it's ok to use the same ?
+            let getOrders pair = 
+                let querystring = f"symbol=%s&limit=%i" (getSymbol pair) limit
+                let (response, jsonString, error) = httpGet (f"%s/api/v3/allOrders" baseUrl) querystring serverTime
+                if response.IsSuccessStatusCode then 
+                    orders.Add(parser.ParseClosedOrders pair jsonString)
+                else failwithf "Failed to retrieve orders for \"%O\". %s" pair error
+
+            Parallel.ForEach(validPairs, getOrders) |> ignore
+            orders.ToArray() |> Array.fold Array.append Array.empty<ClosedOrder>
 
 
         member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
@@ -202,7 +223,7 @@ type public Client(settings:Settings) =
                         (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(normalizedAddressTag)))
                         (amount.ToString(CultureInfo.InvariantCulture))  
                         addressDescription
-                        (get_timestamp())
+                        (getServerTime())
                         recvWindow
 
             let signature = createHMACSignature(settings.SecretKey, totalParams)
@@ -244,3 +265,7 @@ type public Client(settings:Settings) =
 
             with e -> WithdrawResponse(false, e.Message, null)
 
+
+        member this.ListWithdrawals: Withdrawal [] = 
+            checkApiKeys()
+            raise (System.NotImplementedException())

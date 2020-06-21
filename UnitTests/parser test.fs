@@ -59,3 +59,27 @@ let ``Parse Open Orders`` () =
     orders.[0].BuyOrSellQuantity |> should equal 1176.4
     orders.[0].LimitPrice |> should equal 0.08500
 
+
+
+[<Test>]
+let ``Parse Closed Orders`` () =
+    let pair = CurrencyPair("TRX", "XRP")
+    let orders = parser.ParseClosedOrders pair (readData "list closed orders.json")
+
+    orders.Length |> should equal 1
+    orders.[0].Id |> should equal "38835532"
+    orders.[0].OpenTime |> should (equalWithin (TimeSpan.FromSeconds(1.))) (DateTime(2020,06,21, 10,58,12))
+    orders.[0].CloseTime |> should (equalWithin (TimeSpan.FromSeconds(1.))) (DateTime(2020,06,21, 11,38,31))
+    orders.[0].Pair |> should equal (CurrencyPair("TRX", "XRP"))
+    orders.[0].Type |> should equal OrderType.Limit
+    orders.[0].Side |> should equal OrderSide.Buy
+    orders.[0].BuyOrSellQuantity |> should equal 1176.4
+    orders.[0].PaidOrReceivedQuantity |> should equal 99.994
+    orders.[0].Price |> should equal 0.085
+    orders.[0].Fee |> should equal 0
+    orders.[0].Status |> should equal "FILLED"   
+    orders.[0].Reason |> should be Null
+    orders.[0].Note |> should equal "executedQuantity: 1176.4 - clientOrderId:web_ebedcd0f5af94fca947644dc35aff7f4"
+
+
+

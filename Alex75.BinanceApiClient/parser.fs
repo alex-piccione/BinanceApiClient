@@ -82,3 +82,40 @@ let ParseOpenOrders pair jsonString =
     JsonValue.Parse(jsonString).AsArray()
     |> Array.map (getOrder pair)
 
+
+let ParseClosedOrders pair jsonString =
+
+    let getOrder (pair:CurrencyPair) (item:JsonValue) = 
+
+        let status = item.["status"].AsString()
+
+        if status = "NEW" then None
+        else
+            let id = item.["orderId"].AsString()
+            let openTime = getDate item.["time"]
+            let closeTime = getDate item.["updateTime"]
+            let quantity = item.["origQty"].AsDecimal()
+            let executedQuantity = item.["executedQty"].AsDecimal()
+            let paid = item.["cummulativeQuoteQty"].AsDecimal() 
+
+            let side = match item.["side"].AsString() with
+                       | "BUY" -> OrderSide.Buy
+                       | "SELL" -> OrderSide.Sell
+                       | x -> failwithf "Unknown side: %s " x
+            let type_ = match item.["type"].AsString() with
+                        | "MARKET" -> OrderType.Market
+                        | "LIMIT" -> OrderType.Limit
+                        | x -> failwithf "Unknown type: %s " x
+            let price = if type_ = OrderType.Limit then item.["price"].AsDecimal() else 0m
+
+            let clientOrderId = item.["clientOrderId"].AsString()
+
+            let fee = 0m
+            // calculate fee using quantity, price, paid ...
+            let note = sprintf "executedQuantity: %s - clientOrderId:%s" (executedQuantity.ToString("G27")) clientOrderId
+
+            Some (ClosedOrder(id, type_, side, openTime, closeTime, status, null, pair, quantity, paid, price, fee, note))
+
+    JsonValue.Parse(jsonString).AsArray()
+    |> Array.choose (getOrder pair) 
+    //|> Array.map (getOrder pair) 
