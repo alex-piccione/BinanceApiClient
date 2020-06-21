@@ -2,10 +2,13 @@
 
 open System
 open System.Text
+open System.Threading.Tasks
 open System.Collections.Generic
 open System.Security.Cryptography
 open System.Globalization
-open Newtonsoft.Json; open Newtonsoft.Json.Linq
+
+open Newtonsoft.Json; 
+open Newtonsoft.Json.Linq
 open Flurl.Http
 open Alex75.Cryptocurrencies
 open models
@@ -26,11 +29,11 @@ type public Client(settings:Settings) =
     let assets_cache_time = TimeSpan.FromHours 6.0
     let balance_cache_time = TimeSpan.FromSeconds 30.0
 
-    let symbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
+    let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
 
-    let get_timestamp () = (f"%s/%s" baseUrl "/api/v1/time").GetJsonAsync<ServerTime>().Result.serverTime
+    let get_timestamp () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
-    let recvWindow = 10*1000 // recvWindow cannot exceed 60000. Default: 5000
+    let recvWindow = 15*1000 // recvWindow cannot exceed 60000. Default: 5000
     
   
     /// <summary>
@@ -44,12 +47,21 @@ type public Client(settings:Settings) =
         let hash = new HMACSHA256(keyBytes)
         let computedHash = hash.ComputeHash(messageBytes)
         BitConverter.ToString(computedHash).Replace("-", "").ToLower()
+
+
+    let httpGet url querystring =
+        let parameters = f"%s&timestamp=%i" querystring (get_timestamp())
+        let signature = createHMACSignature(settings.SecretKey, parameters)
+
+        let response = (f"%s?%s&signature=%s" url parameters signature)
+                        .WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                        .AllowAnyHttpStatus().GetAsync().Result
+        let jsonContent = response.Content.ReadAsStringAsync().Result
+        let error = if response.IsSuccessStatusCode then null else parser.parse_error jsonContent
+        (response, jsonContent, error)
     
 
     interface IClient with
-
-        member this.ListOpenOrders(): ICollection<OpenOrder> = 
-            raise (System.NotImplementedException())
 
         member this.ListPairs()  = 
             match cache.GetPairs assets_cache_time with
@@ -63,7 +75,7 @@ type public Client(settings:Settings) =
             match cache.GetTicker pair settings.TickerCacheDuration with 
             | Some ticker -> ticker
             | _ ->         
-                let url = f"%s/api/v3/ticker/24hr?symbol=%s" baseUrl (symbol(pair))
+                let url = f"%s/api/v3/ticker/24hr?symbol=%s" baseUrl (getSymbol pair)
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
 
                 if ticker_24h.IsSuccess 
@@ -111,7 +123,7 @@ type public Client(settings:Settings) =
             let url = f"%s/api/v3/order" baseUrl           
             
             let totalParams = f"""symbol=%s&side=%s&type=%s&quantity=%s&timestamp=%i&recvWindow=%i"""
-                               (symbol request.Pair) 
+                               (getSymbol request.Pair) 
                                (if request.Side = OrderSide.Buy then "BUY" else "SELL") 
                                "MARKET" 
                                (request.BuyOrSellQuantity.ToString(CultureInfo.InvariantCulture)) 
@@ -142,6 +154,26 @@ type public Client(settings:Settings) =
 
         member this.CreateLimitOrder(request: CreateOrderRequest): string = 
             raise (System.NotImplementedException())
+
+
+
+        member this.ListOpenOrdersIsAvailable(): bool = false
+        member this.ListOpenOrders(): ICollection<OpenOrder> = 
+            raise (System.NotImplementedException())
+
+        member this.ListOpenOrders_2(pairs: CurrencyPair[]): OpenOrder[] = 
+            // The API allows to not specify the symbol but the call costs 40 times the single symbol call
+
+            let orders = System.Collections.Concurrent.ConcurrentBag()
+            let getOrders pair =
+                let (response, jsonString, error) = httpGet (f"%s/api/v3/openOrders" baseUrl) (f"symbol=%s" (getSymbol pair))
+                //let url = f"%s/api/v3/openOrders?symbol=%s" baseUrl (getSymbol pair)
+                if response.IsSuccessStatusCode then 
+                    orders.Add(parser.ParseOpenOrders pair jsonString)
+                else failwithf "Failed to retrieve orders for \"%O\". %s" pair error
+
+            Parallel.ForEach(pairs, getOrders) |> ignore
+            orders.ToArray() |> Array.fold Array.append Array.empty<OpenOrder>
 
 
 

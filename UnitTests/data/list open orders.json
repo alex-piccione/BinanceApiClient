@@ -1,0 +1,22 @@
+﻿[
+  {
+    "symbol": "TRXXRP",
+    "orderId": 38835532,
+    "orderListId": -1,
+    "clientOrderId": "web_ebedcd0f5af94fca947644dc35aff7f4",
+    "price": "0.08500000",
+    "origQty": "1176.40000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1592737092130,
+    "updateTime": 1592737092130,
+    "isWorking": true,
+    "origQuoteOrderQty": "0.00000000"
+  }
+]

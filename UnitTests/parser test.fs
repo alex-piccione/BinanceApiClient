@@ -1,4 +1,5 @@
 ﻿//module  ``unit tests``.parser_test
+[<NUnit.Framework.Category("parser")>]
 module parser_test
 
 open System.Linq
@@ -6,15 +7,18 @@ open System.IO
 open NUnit.Framework; open FsUnit
 open Newtonsoft.Json; open Newtonsoft.Json.Linq
 open Alex75.Cryptocurrencies
+open System
+
+let readData file = System.IO.File.ReadAllText("data/" + file)
 
 
-[<Test; Category("parser")>]
+[<Test>]
 let ``parse pairs``() =
-    let pairs = parser.parse_pairs (File.ReadAllText "data/exchangeInfo.json")
+    let pairs = parser.parse_pairs (readData "exchangeInfo.json")
     pairs |> should contain (CurrencyPair("eth", "btc"))
         
 
-[<Test; Category("parser")>]
+[<Test>]
 let ``parse error``() =
     
     let jsonString = "{\"msg\":\"Timestamp for this request is outside of the recvWindow.\",\"success\":false}"
@@ -29,12 +33,9 @@ let ``parse error``() =
     error |> should equal "Timestamp for this request is outside of the recvWindow."
 
 
-[<Test; Category("parser")>]
+[<Test>]
 let ``parse account response`` () =
-
-    let jsonString = System.IO.File.ReadAllText "data/account data.json"
-
-    let balance = parser.parse_account jsonString
+    let balance = parser.parse_account (readData "account data.json")
 
     balance |> should not' (be null)
     balance.HasCurrency(Currency.BTC) |> should be True
@@ -42,3 +43,19 @@ let ``parse account response`` () =
     balance.[Currency.BTC].OwnedAmount |> should equal (4723846.89208129 + 10.0)
     //[Currency.BTC] |> should equal (4723846.89208129m + 10m)
     //response.Assets.[Currency.LTC] |> should equal (4763368.68006011m + 20m)
+
+
+[<Test>]
+let ``Parse Open Orders`` () =
+    let pair = CurrencyPair("TRX", "XRP")
+    let orders = parser.ParseOpenOrders pair (readData "list open orders.json")
+
+    orders.Length |> should equal 1
+    orders.[0].Id |> should equal "38835532"
+    orders.[0].OpenTime |> should (equalWithin (TimeSpan.FromSeconds(1.))) (DateTime(2020,06,21, 10,58,12))
+    orders.[0].Pair |> should equal (CurrencyPair("TRX", "XRP"))
+    orders.[0].Type |> should equal OrderType.Limit
+    orders.[0].Side |> should equal OrderSide.Buy
+    orders.[0].BuyOrSellQuantity |> should equal 1176.4
+    orders.[0].LimitPrice |> should equal 0.08500
+

@@ -1,7 +1,7 @@
 # Binance API Client
 
 Simple client interface to facilitate the use of some **Binance** API.  
-Developed specifically for _XRP_.  
+Tested thorougly with _XRP_ currency.  
   
 Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 
@@ -17,30 +17,14 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 ---                          |---      |---                                                                  |---
 | List Pairs                 | No      |---                                                                  | Done
 | Get Ticker / Get Tickers   | No      | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)             | Done
-| Get Balance (modified)     | Yes     | List the owned and free amount of all the not empty currencies  	 | Done
+| Get Balance                | Yes     | List the owned and free amount of all the not empty currencies  	 | Done
 | Create Market Order        | Yes     | Create a market order									             | Done
+| List Open Orders           | Yes     | List the active orders on the specified markets
 | Withdraw                   | Yes     | Withdraw a currency                                                 | Done
 
 <sup>(1)</sup> = Requires an Account API key
 
 
-> Note  
-> **GetBalance** changed from the previous minor version **0.8**
-> Now it returns a list and does not have the properties IsSuccess and Error anymore  
-> The old version is renamed *GetBalance_old*.
-
-<!--
-| Create Limit Order         | Yes     | Create a limit order									 | Not implemented
-| List Open Orders           | Yes     | List open orders										 | Not implemented
-| Check Order Status         | Yes     |														 | Not implemented
-| Cancel Order               | Yes     | Cancel an order										 | Not implemented
-| List User Transactions     | Yes     | List the User Transactions								 | Not implemented
--->
-
-
-
-Withdraw XRP has a minimum quantity of 25.  
-Sell XRP has a minimum quantity of 80 ?!
 
 ### Withdrawal Suspension
 
@@ -52,6 +36,8 @@ I don't know what HTTP Status Code is returned.
 ### Known issues 
 
 - Minimum amount for orders is unknown
+  Withdraw XRP has a minimum quantity of 25.  
+  Sell XRP has a minimum quantity of 80 ?!
 
 
 ## For developers

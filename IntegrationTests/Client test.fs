@@ -8,7 +8,7 @@ open Alex75.Cryptocurrencies
 open Alex75.BinanceApiClient
 
 
-[<Category("Client 2")>]
+[<Category("Client")>]
 type ClientTest () =
 
     let client = Client(settings.settings) :> IClient
