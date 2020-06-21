@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="settings.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="settings.fs" />
     <Compile Include="Client test.fs" />
     <Compile Include="Client GetTicker.test.fs" />

@@ -1,5 +1,4 @@
-﻿//[<NUnit.Framework.Category("Orders")>]
-namespace Test
+﻿namespace Test
 
 open System
 open NUnit.Framework
@@ -9,7 +8,7 @@ open Alex75.Cryptocurrencies
 open Alex75.BinanceApiClient
 
 
-[<Category("Client")>]
+[<Category("Client"); Category("REQUIRES_API_KEY")>]
 type ClientTest_ListOrders () =
 
     let client = Client(settings.settings) :> IClient
