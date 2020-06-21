@@ -64,7 +64,7 @@ type ClientTest () =
     member __.``Withdraw XRP [when] destimation tag is zero`` () =
 
         settings.readSettings() |> ignore
-        let address = "rGU5P1T5KVhNXUs8RG2c9DkxzopenDmdFj"
+        let address = settings.withdrawalAddress
         let addressTag = "0"  
 
         let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)

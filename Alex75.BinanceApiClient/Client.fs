@@ -29,13 +29,17 @@ type public Client(settings:Settings) =
     let assets_cache_time = TimeSpan.FromHours 6.0
     let balance_cache_time = TimeSpan.FromSeconds 30.0
 
+    let checkApiKeys () =
+        if String.IsNullOrEmpty settings.PublicKey || String.IsNullOrEmpty settings.SecretKey 
+        then failwithf "Private methods requires API keys to be set"        
+
     let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
 
     let get_timestamp () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
     let recvWindow = 15*1000 // recvWindow cannot exceed 60000. Default: 5000
     
-  
+      
     /// <summary>
     /// Creates a HMACSHA256 Signature based on the key and total parameters
     /// </summary>
@@ -47,7 +51,6 @@ type public Client(settings:Settings) =
         let hash = new HMACSHA256(keyBytes)
         let computedHash = hash.ComputeHash(messageBytes)
         BitConverter.ToString(computedHash).Replace("-", "").ToLower()
-
 
     let httpGet url querystring =
         let parameters = f"%s&timestamp=%i" querystring (get_timestamp())
@@ -97,7 +100,7 @@ type public Client(settings:Settings) =
 
 
         member this.GetBalance(): AccountBalance = 
-
+            checkApiKeys()
             match cache.GetAccountBalance balance_cache_time with
             | Some balance -> balance
             | _ -> 
@@ -119,7 +122,7 @@ type public Client(settings:Settings) =
                   
 
         member this.CreateMarketOrder(request: CreateOrderRequest): CreateOrderResult = 
-            
+            checkApiKeys()
             let url = f"%s/api/v3/order" baseUrl           
             
             let totalParams = f"""symbol=%s&side=%s&type=%s&quantity=%s&timestamp=%i&recvWindow=%i"""
@@ -162,12 +165,13 @@ type public Client(settings:Settings) =
             raise (System.NotImplementedException())
 
         member this.ListOpenOrders_2(pairs: CurrencyPair[]): OpenOrder[] = 
+            checkApiKeys()
+
             // The API allows to not specify the symbol but the call costs 40 times the single symbol call
 
             let orders = System.Collections.Concurrent.ConcurrentBag()
             let getOrders pair =
                 let (response, jsonString, error) = httpGet (f"%s/api/v3/openOrders" baseUrl) (f"symbol=%s" (getSymbol pair))
-                //let url = f"%s/api/v3/openOrders?symbol=%s" baseUrl (getSymbol pair)
                 if response.IsSuccessStatusCode then 
                     orders.Add(parser.ParseOpenOrders pair jsonString)
                 else failwithf "Failed to retrieve orders for \"%O\". %s" pair error
@@ -178,7 +182,7 @@ type public Client(settings:Settings) =
 
 
         member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
-            
+            checkApiKeys()
             let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
 
             let mutable normalizedAddressTag = addressTag
@@ -212,18 +216,20 @@ type public Client(settings:Settings) =
 
 
                 // fucking Binance API returns 200 when the request fails for timestamp not synchronized
+                // or for permission denied...
                 // so it makes not possible decide which "model" is returned based on the HTTP status
 
                 if httpResponse.IsSuccessStatusCode then                    
                     let json = JsonConvert.DeserializeObject<JObject>(content)
-
-                    let isSuccess = json.["success"].Value<bool>()
+                    
+                    let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
 
                     if isSuccess then
                         let id =  json.["id"].Value<string>()
                         WithdrawResponse(true, null, id)
                     else 
-                        WithdrawResponse(false, json.["msg"].Value<string>(), null)
+                        let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
+                        WithdrawResponse(false, message, null)
 
                 else 
                     let error = parser.parse_error content

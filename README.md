@@ -36,7 +36,7 @@ I don't know what HTTP Status Code is returned.
 ### Known issues 
 
 - Minimum amount for orders is unknown
-  Withdraw XRP has a minimum quantity of 25.  
+  Withdraw XRP has a minimum quantity of 25 become 50 (2019-07-07).  
   Sell XRP has a minimum quantity of 80 ?!
 
 
