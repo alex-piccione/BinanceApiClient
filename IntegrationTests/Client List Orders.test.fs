@@ -20,4 +20,13 @@ type ClientTest_ListOrders () =
             //CurrencyPair.BTC_EUR
             CurrencyPair("TRX", "XRP")
         |])
-        orders |> should not' (be Null)        
+        orders |> should not' (be Null)      
+        
+    [<Test>]
+    member this.``List Open Orders [when] invalid pairs are passsed`` () =
+        let orders = client.ListOpenOrders_2([|
+            CurrencyPair("TRX", "XRP")
+            CurrencyPair("XTZ", "XRP")
+            CurrencyPair("AAA", "BBB")
+        |])
+        orders |> should not' (be Null)      

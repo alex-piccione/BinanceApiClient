@@ -12,6 +12,7 @@ open Newtonsoft.Json.Linq
 open Flurl.Http
 open Alex75.Cryptocurrencies
 open models
+open System.Linq
 
 
 
@@ -167,6 +168,12 @@ type public Client(settings:Settings) =
         member this.ListOpenOrders_2(pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
+            // todo: purge from invalid pairs        
+            let validPairs = 
+                (this :> IClient).ListPairs().ToArray()
+                |> Array.filter (fun pair -> (pairs |> Array.contains pair))
+
+
             // The API allows to not specify the symbol but the call costs 40 times the single symbol call
 
             let orders = System.Collections.Concurrent.ConcurrentBag()
@@ -176,7 +183,7 @@ type public Client(settings:Settings) =
                     orders.Add(parser.ParseOpenOrders pair jsonString)
                 else failwithf "Failed to retrieve orders for \"%O\". %s" pair error
 
-            Parallel.ForEach(pairs, getOrders) |> ignore
+            Parallel.ForEach(validPairs, getOrders) |> ignore
             orders.ToArray() |> Array.fold Array.append Array.empty<OpenOrder>
 
 
