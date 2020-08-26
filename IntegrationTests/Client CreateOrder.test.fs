@@ -14,7 +14,7 @@ type ClientTest_Order () =
     let client = Client(settings.settings) :> IClient
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member __.``CreateMarketOrder Buy 50 XRP with BTC`` () =
+    member this.``CreateMarketOrder Buy 50 XRP with BTC`` () =
         let pair = CurrencyPair("XRP", "btc")
         let result = client.CreateMarketOrder( CreateOrderRequest.Market(OrderSide.Buy, pair, 50m))
 
@@ -23,7 +23,7 @@ type ClientTest_Order () =
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member __.``CreateMarketOrder Sell 20 XRP for BTC`` () =
+    member this.``CreateMarketOrder Sell 20 XRP for BTC`` () =
         //let pair = CurrencyPair("btc", "xrp") invalid symbol
         let pair = CurrencyPair("xrp", "btc")
         //let price = 0.00003016m // XRP/BTC
@@ -36,7 +36,7 @@ type ClientTest_Order () =
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member __.``CreateMarketOrder Buy 30 XRP with EUR`` () =
+    member this.``CreateMarketOrder Buy 30 XRP with EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 30m  // XRP
         let result = client.CreateMarketOrder(CreateOrderRequest.Market(OrderSide.Buy, pair, amount))
@@ -48,7 +48,7 @@ type ClientTest_Order () =
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member __.``CreateMarketOrder Sell 80 XRP for EUR`` () =
+    member this.``CreateMarketOrder Sell 80 XRP for EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 80m  // XRP
         let result = client.CreateMarketOrder(CreateOrderRequest.Market(OrderSide.Sell, pair, amount))

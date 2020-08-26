@@ -14,28 +14,28 @@ type ClientTest () =
     let client = Client(settings.settings) :> IClient
 
     [<Test>]
-    member __.``GetExchangeInfo`` () =
+    member this.``GetExchangeInfo`` () =
 
         let info = client.GetExchangeInfo
 
         info |> should not' (be null)
 
     [<Test>]
-    member __.``GetTicker`` () =
+    member this.``GetTicker`` () =
         let pair = CurrencyPair("XRP", "btc")
         let ticker = client.GetTicker(pair)
         ticker |> should not' (be null)
 
 
     [<Test>]
-    member __.``GetTicker [when] pair do not exists [should] raise an error`` () =
+    member this.``GetTicker [when] pair does not exist [should] raise an error`` () =
         let invalid_pair = CurrencyPair("XRP", "usd")  
         (fun () -> client.GetTicker(invalid_pair) |> ignore) 
         |> should throw typeof<UnsupportedPair>
 
 
     [<Test; Category("REQUIRES_API_KEY")>]
-    member __.``Get Balance`` () =        
+    member this.``Get Balance`` () =        
         settings.readSettings() |> ignore       
         let response = client.GetBalance()
         response |> should not' (be null)
@@ -44,7 +44,7 @@ type ClientTest () =
 
 
     [<Test; Category("SKIP_ON_DEPLOY"); Category("AFFECTS_BALANCE")>]
-    member __.``Withdraw XRP`` () =
+    member this.``Withdraw XRP`` () =
         
         settings.readSettings() |> ignore
         let address = settings.withdrawalAddress
@@ -61,7 +61,7 @@ type ClientTest () =
 
 
     [<Test; Category("SKIP_ON_DEPLOY"); Category("AFFECTS_BALANCE")>]
-    member __.``Withdraw XRP [when] destimation tag is zero`` () =
+    member this.``Withdraw XRP [when] destimation tag is zero`` () =
 
         settings.readSettings() |> ignore
         let address = settings.withdrawalAddress
