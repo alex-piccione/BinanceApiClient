@@ -15,7 +15,7 @@ type ClientTest_ListOrders () =
 
     [<Test>]
     member this.``List Open Orders`` () =
-        let orders = client.ListOpenOrders_2([|
+        let orders = client.ListOpenOrdersOfCurrencies([|
             //CurrencyPair.ADA_BTC
             //CurrencyPair.BTC_EUR
             CurrencyPair("TRX", "XRP")
@@ -24,7 +24,7 @@ type ClientTest_ListOrders () =
         
     [<Test>]
     member this.``List Open Orders [when] invalid pairs are passsed`` () =
-        let orders = client.ListOpenOrders_2([|
+        let orders = client.ListOpenOrdersOfCurrencies([|
             CurrencyPair("TRX", "XRP")
             CurrencyPair("XTZ", "XRP")
             CurrencyPair("AAA", "BBB")

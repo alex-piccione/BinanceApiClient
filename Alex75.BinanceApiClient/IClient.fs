@@ -8,7 +8,7 @@ open models
 
 [<Interface>]
 type IClient =
-    inherit IApiClientPrivate
+    //inherit IApiClientPrivate
     inherit IApiClientMakeOrders
   
     // parsing not implemented yet

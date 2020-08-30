@@ -161,11 +161,12 @@ type public Client(settings:Settings) =
 
 
 
-        member this.ListOpenOrdersIsAvailable(): bool = false
+        member this.ListOpenOrdersIsAvailable = false
         member this.ListOpenOrders(): ICollection<OpenOrder> = 
-            raise (System.NotImplementedException())
+            raise (System.NotImplementedException("Use ListOpenOrdersOfCurrencies()"))
 
-        member this.ListOpenOrders_2(pairs: CurrencyPair[]): OpenOrder[] = 
+         member this.ListOpenOrdersOfCurrenciesIsAvailable = true
+        member this.ListOpenOrdersOfCurrencies(pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
             // todo: purge from invalid pairs        
