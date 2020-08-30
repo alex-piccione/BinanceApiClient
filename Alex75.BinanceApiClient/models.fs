@@ -5,57 +5,39 @@ open System.Collections.Generic
 open System
 
 
-type XrpWallet (address:string, destinationTag:string option) =
-    member __.Address = address
-    member __.DestinationTag = destinationTag
-
-
 type ServerTime = {serverTime:int64}
 
 [<AbstractClass>]
 type Response (isSuccess:bool, error:string) = 
-    member __.IsSuccess = isSuccess
-    member __.Error = error
+    member this.IsSuccess = isSuccess
+    member this.Error = error
 
-type TickerResponse (isSuccess:bool, error:string, ticker:Option<Ticker>) = //{ IsSuccess:bool; Error:string; Ticker:Ticker }
+type TickerResponse (isSuccess:bool, error:string, ticker:Option<Ticker>) =
     inherit Response( isSuccess, error) 
-    member __.Ticker = ticker
+    member this.Ticker = ticker
+      
 
-type Ticker_price(bidPrice:decimal, askPrice:decimal) =
-    member __.Bid = bidPrice
-    member __.Ask = askPrice
-    
-    
-(*
-{
-  "symbol": "LTCBTC",
-  "bidPrice": "4.00000000",
-  "bidQty": "431.00000000",
-  "askPrice": "4.00000200",
-  "askQty": "9.00000000"
-}    
-*)
 
 // Binance API response
 type Ticker_24h(code:string, msg:string,
                 lastPrice:decimal, bidPrice:decimal, askPrice:decimal, 
                 openPrice:decimal, highPrice:decimal, lowPrice:decimal) =
 
-    member __.IsSuccess = (code = null)
-    member __.Error = msg
+    member this.IsSuccess = (code = null)
+    member this.Error = msg
 
-    member __.LastPrice = lastPrice
-    member __.BidPrice = bidPrice
-    member __.AskPrice = askPrice
-    member __.OpenPrice = openPrice
-    member __.HighPrice = highPrice
-    member __.LowPrice = lowPrice
+    member this.LastPrice = lastPrice
+    member this.BidPrice = bidPrice
+    member this.AskPrice = askPrice
+    member this.OpenPrice = openPrice
+    member this.HighPrice = highPrice
+    member this.LowPrice = lowPrice
 
-    member __.ToResponse pair = 
+    member this.ToResponse pair = 
 
-        match __.IsSuccess with 
+        match this.IsSuccess with 
         //| true -> TickerResponse(true, null, Some(Ticker(pair, bidPrice, askPrice, Some(lowPrice), Some(highPrice), Some(lastPrice))))
-        | false -> TickerResponse(false, __.Error, None)
+        | false -> TickerResponse(false, this.Error, None)
         | true -> 
             let ticker = Ticker(pair, bidPrice, askPrice, Some(lowPrice), Some(highPrice), Some(lastPrice))
             TickerResponse(true, null, Some(ticker))
@@ -87,7 +69,7 @@ type Ticker_24h(code:string, msg:string,
 
 type BalanceResponse(isSuccess, error:string, assets:IDictionary<Currency, decimal>) =
     inherit Response(isSuccess, error)
-    member __.Assets = assets
+    member this.Assets = assets
     
     static member Success assets = new BalanceResponse(true, null, assets)
     static member Fail error = new BalanceResponse(false, error, null)
@@ -95,7 +77,7 @@ type BalanceResponse(isSuccess, error:string, assets:IDictionary<Currency, decim
 
 type WithdrawResponse(isSuccess:bool, error:string, operationId:string) =     
     inherit Response(isSuccess, error)
-    member __.OperationId = operationId
+    member this.OperationId = operationId
 
 
 type Withdrawal(date:DateTime, currency:Currency, amount:decimal, destination:string) =
