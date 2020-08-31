@@ -5,6 +5,7 @@ open NUnit.Framework
 open FsUnit
 
 open Alex75.Cryptocurrencies
+open Alex75.Cryptocurrencies.Exchanges
 open Alex75.BinanceApiClient
 
 [<Category("Client")>]
@@ -29,4 +30,4 @@ type ClientTest () =
     [<Test>]
     member this.``GetTicker [when] pair do not exists [should] raise an error`` () =
         let pair = CurrencyPair("XRP", "NNN")
-        (fun () -> client.GetTicker(pair) |> ignore) |> should throw (typeof<UnsupportedPair>)
+        (fun () -> client.GetTicker(pair) |> ignore) |> should throw typeof<Exception>

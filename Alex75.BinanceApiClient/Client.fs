@@ -89,7 +89,7 @@ type public Client(settings:Settings) =
                     ticker
                 else
                     match ticker_24h.Error with 
-                    | "Invalid symbol." -> raise (UnsupportedPair(pair))
+                    | "Invalid symbol." -> failwithf "Pair %s is not supported" (pair.ToString())
                     | _ -> failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
@@ -137,7 +137,6 @@ type public Client(settings:Settings) =
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
             
-            //try
             let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                 .WithHeader("Content-Type", "application/x-www-form-urlencoded")
                                 .AllowHttpStatus("4xx")
@@ -148,7 +147,7 @@ type public Client(settings:Settings) =
 
             if response.IsSuccessStatusCode then      
                 let orderId, price = parser.ParseCreateOrderResponse(content)
-                { reference=orderId; price=price}
+                CreateOrderResult(orderId, price)
             else 
                 let error = parser.parse_error content
                 //match code with 
@@ -162,10 +161,9 @@ type public Client(settings:Settings) =
 
 
         member this.ListOpenOrdersIsAvailable = false
-        member this.ListOpenOrders(): ICollection<OpenOrder> = 
-            raise (System.NotImplementedException("Use ListOpenOrdersOfCurrencies()"))
+        member this.ListOpenOrders() = raise (System.NotImplementedException("Use ListOpenOrdersOfCurrencies()"))
 
-         member this.ListOpenOrdersOfCurrenciesIsAvailable = true
+        member this.ListOpenOrdersOfCurrenciesIsAvailable = true
         member this.ListOpenOrdersOfCurrencies(pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
@@ -188,7 +186,12 @@ type public Client(settings:Settings) =
             Parallel.ForEach(validPairs, getOrders) |> ignore
             orders.ToArray() |> Array.fold Array.append Array.empty<OpenOrder>
 
-        member this.ListClosedOrders(pairs: CurrencyPair[]): ClosedOrder[] = 
+
+        member this.ListClosedOrdersIsAvailable = false
+        member this.ListClosedOrders() = raise (System.NotImplementedException())
+
+        member this.ListClosedOrdersOfCurrenciesIsAvailable = true
+        member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
             // todo: purge from invalid pairs        

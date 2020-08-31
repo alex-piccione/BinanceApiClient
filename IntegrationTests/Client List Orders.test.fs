@@ -34,7 +34,7 @@ type ClientTest_ListOrders () =
 
     [<Test>]
     member this.``List Closed Orders`` () =
-        let orders = client.ListClosedOrders([|
+        let orders = client.ListClosedOrdersOfCurrencies([|
             //CurrencyPair.ADA_BTC
             //CurrencyPair.BTC_EUR
             CurrencyPair("TRX", "XRP")

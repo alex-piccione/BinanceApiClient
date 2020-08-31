@@ -18,8 +18,8 @@ type ClientTest_Order () =
         let pair = CurrencyPair("XRP", "btc")
         let result = client.CreateMarketOrder( CreateOrderRequest.Market(OrderSide.Buy, pair, 50m))
 
-        result.reference |> should not' (be NullOrEmptyString)
-        result.price |> should not' (be Null)
+        result.Reference |> should not' (be NullOrEmptyString)
+        result.Price |> should not' (be Null)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
@@ -31,8 +31,8 @@ type ClientTest_Order () =
         let amount = 20m  // XRP
         let result = client.CreateMarketOrder(CreateOrderRequest.Market(OrderSide.Sell, pair, amount))
 
-        result.reference |> should not' (be NullOrEmptyString)
-        result.price |> should not' (be Null)
+        result.Reference |> should not' (be NullOrEmptyString)
+        result.Price |> should not' (be Null)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
@@ -43,8 +43,8 @@ type ClientTest_Order () =
 
         // with 25 {"code":-1013,"msg":"Filter failure: MIN_NOTIONAL"}
 
-        result.reference |> should not' (be NullOrEmptyString)
-        result.price |> should not' (be Null)
+        result.Reference |> should not' (be NullOrEmptyString)
+        result.Price |> should not' (be Null)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
@@ -56,8 +56,8 @@ type ClientTest_Order () =
         // eror with 50 (80 was ok)
         // with 25 {"code":-1013,"msg":"Filter failure: MIN_NOTIONAL"}
 
-        result.reference |> should not' (be NullOrEmptyString)
-        result.price |> should not' (be Null)
+        result.Reference |> should not' (be NullOrEmptyString)
+        result.Price |> should not' (be Null)
 
 
     //[<Test; Category("AFFECTS_BALANCE")>]
