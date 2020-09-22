@@ -63,7 +63,8 @@ type public Client(settings:Settings) =
         let jsonContent = response.Content.ReadAsStringAsync().Result
         let error = if response.IsSuccessStatusCode then null else parser.parse_error jsonContent
         (response, jsonContent, error)
-    
+
+   
 
     interface IClient with
 
@@ -98,7 +99,6 @@ type public Client(settings:Settings) =
             // todo: parsing not implemented yet
             let response = url.GetStringAsync().Result
             response
-
 
 
         member this.GetBalance(): AccountBalance = 
@@ -216,20 +216,40 @@ type public Client(settings:Settings) =
             orders.ToArray() |> Array.fold Array.append Array.empty<ClosedOrder>
 
 
-        member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
+
+        member this.ListWithdralsIsAvailable = false
+        member this.ListWithdrals(sinceWhen: DateTime): Withdrawal [] = 
+            raise (System.NotImplementedException())
+        
+        
+        member this.ListWithdralsOfCurrenciesIsAvailable = false
+        member this.ListWithdralsOfCurrencies(sinceWhen: DateTime, pairs: CurrencyPair []): Withdrawal [] = 
+            raise (System.NotImplementedException())
+
+        
+
+        member this.Withdraw(wallet: Wallet, amount: float): unit = 
             checkApiKeys()
+
+            // Withdrawal can be done only on registered addresses
+            // Findout the registered address name ()
+            //let addressName = getAddressName wallet 
+
             let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
 
-            let mutable normalizedAddressTag = addressTag
-            if currency = Currency.XRP && addressTag = "0" then normalizedAddressTag <- ""
+            let currency = wallet.Currency.UpperCase
+            let address = wallet.Address
+
+            //let mutable normalizedAddressTag = addressTag
+            //if currency = Currency.XRP && addressTag = "0" then normalizedAddressTag <- ""
 
             let totalParams = 
-                sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
-                        (currency.ToString().ToUpper())
+                //sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
+                sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&timestamp=%i&recvWindow=%i""" 
+                        currency
                         address
-                        (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(normalizedAddressTag)))
-                        (amount.ToString(CultureInfo.InvariantCulture))  
-                        addressDescription
+                        (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
+                        (amount.ToString(CultureInfo.InvariantCulture))                          
                         (getServerTime())
                         recvWindow
 
@@ -240,39 +260,37 @@ type public Client(settings:Settings) =
             // documentation said POST but it only accept data in the querystring
             url <- f"%s?%s" url requestBody
 
-            try                
-                let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                                      .WithHeader("Content-Type", "application/x-www-form-urlencoded")
-                                      .AllowHttpStatus("4xx")
-                                      .PostStringAsync("")  // empty because requestBody is only accepted by querystring
-                                      .Result
+           
+            let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                                    .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                                    .AllowHttpStatus("4xx")
+                                    .PostStringAsync("")  // empty because requestBody is only accepted by querystring
+                                    .Result
 
-                let content = httpResponse.Content.ReadAsStringAsync().Result
+            let content = httpResponse.Content.ReadAsStringAsync().Result
 
 
-                // fucking Binance API returns 200 when the request fails for timestamp not synchronized
-                // or for permission denied...
-                // so it makes not possible decide which "model" is returned based on the HTTP status
+            // Binance API returns 200 when the request fails for timestamp not synchronized
+            // or for permission denied...
+            // so it makes not possible decide which "model" is returned based on the HTTP status
 
-                if httpResponse.IsSuccessStatusCode then                    
-                    let json = JsonConvert.DeserializeObject<JObject>(content)
+
+            //parser.parse_withdrawal
+
+            if httpResponse.IsSuccessStatusCode then                    
+                let json = JsonConvert.DeserializeObject<JObject>(content)
                     
-                    let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
+                let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
 
-                    if isSuccess then
-                        let id =  json.["id"].Value<string>()
-                        WithdrawResponse(true, null, id)
-                    else 
-                        let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
-                        WithdrawResponse(false, message, null)
-
+                if isSuccess then
+                    let id =  json.["id"].Value<string>()
+                    ()
                 else 
-                    let error = parser.parse_error content
-                    WithdrawResponse(false, sprintf "%s: %s" httpResponse.ReasonPhrase error, null)
+                    let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
+                    //WithdrawResponse(false, message, null)
+                    failwith message
 
-            with e -> WithdrawResponse(false, e.Message, null)
-
-
-        member this.ListWithdrawals: Withdrawal [] = 
-            checkApiKeys()
-            raise (System.NotImplementedException())
+            else 
+                let error = parser.parse_error content
+                //WithdrawResponse(false, sprintf "%s: %s" httpResponse.ReasonPhrase error, null)
+                failwith error

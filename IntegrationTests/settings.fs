@@ -1,8 +1,6 @@
 ﻿module settings
 
 open System
-open System.IO
-open System.Text.RegularExpressions
 
 open Alex75.BinanceApiClient
 open Microsoft.Extensions.Configuration

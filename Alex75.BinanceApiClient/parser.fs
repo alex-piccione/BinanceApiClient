@@ -41,17 +41,6 @@ let parse_account jsonString =
         if owned > 0m then balance.Add(CurrencyBalance(asset, owned, free))        
     new AccountBalance(balance)
 
-let parse_account_old jsonString = 
-    let json = JsonConvert.DeserializeObject<JObject>(jsonString)    
-    let assets = new Dictionary<Currency, decimal>()
-    for balance in json.["balances"].Values<JObject>() do
-        let asset = balance.["asset"].Value<string>()
-        let free = balance.["free"].Value<decimal>()
-        let locked = balance.["locked"].Value<decimal>()
-        if (free + locked) > 0m then assets.Add(Currency(asset), free + locked)             
-
-    BalanceResponse(true, null, assets)    
-
 
 let ParseCreateOrderResponse jsonString =
     let json = JsonConvert.DeserializeObject<JObject>(jsonString) 
