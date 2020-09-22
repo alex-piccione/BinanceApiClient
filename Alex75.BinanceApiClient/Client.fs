@@ -90,8 +90,7 @@ type public Client(settings:Settings) =
                     ticker
                 else
                     match ticker_24h.Error with 
-                    //| "Invalid symbol." -> raise (UnsupportedPair(pair))
-                    | "Invalid symbol." -> failwith "Pair is not supported"
+                    | "Invalid symbol." -> failwithf "Pair %s is not supported" (pair.ToString())
                     | _ -> failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
@@ -138,7 +137,6 @@ type public Client(settings:Settings) =
             let signature = createHMACSignature(settings.SecretKey, totalParams)
             let requestBody = totalParams + "&signature=" + signature
             
-            //try
             let response = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                 .WithHeader("Content-Type", "application/x-www-form-urlencoded")
                                 .AllowHttpStatus("4xx")

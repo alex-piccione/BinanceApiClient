@@ -28,7 +28,7 @@ type ClientTest () =
 
 
     [<Test>]
-    member this.``GetTicker [when] pair do not exists [should] raise an error`` () =
+    member this.``GetTicker [when] pair does not exist [should] raise an error`` () =
         let invalid_pair = CurrencyPair("XRP", "usd")  
         (fun () -> client.GetTicker(invalid_pair) |> ignore) 
         |> should throw typeof<Exception>

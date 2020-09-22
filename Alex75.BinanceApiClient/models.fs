@@ -8,10 +8,10 @@ type ServerTime = {serverTime:int64}
 
 [<AbstractClass>]
 type Response (isSuccess:bool, error:string) = 
-    member __.IsSuccess = isSuccess
-    member __.Error = error
+    member this.IsSuccess = isSuccess
+    member this.Error = error
 
-type TickerResponse (isSuccess:bool, error:string, ticker:Option<Ticker>) = //{ IsSuccess:bool; Error:string; Ticker:Ticker }
+type TickerResponse (isSuccess:bool, error:string, ticker:Option<Ticker>) =
     inherit Response( isSuccess, error) 
     member __.Ticker = ticker
 
@@ -22,21 +22,21 @@ type Ticker_24h(code:string, msg:string,
                 lastPrice:decimal, bidPrice:decimal, askPrice:decimal, 
                 openPrice:decimal, highPrice:decimal, lowPrice:decimal) =
 
-    member __.IsSuccess = (code = null)
-    member __.Error = msg
+    member this.IsSuccess = (code = null)
+    member this.Error = msg
 
-    member __.LastPrice = lastPrice
-    member __.BidPrice = bidPrice
-    member __.AskPrice = askPrice
-    member __.OpenPrice = openPrice
-    member __.HighPrice = highPrice
-    member __.LowPrice = lowPrice
+    member this.LastPrice = lastPrice
+    member this.BidPrice = bidPrice
+    member this.AskPrice = askPrice
+    member this.OpenPrice = openPrice
+    member this.HighPrice = highPrice
+    member this.LowPrice = lowPrice
 
-    member __.ToResponse pair = 
+    member this.ToResponse pair = 
 
-        match __.IsSuccess with 
+        match this.IsSuccess with 
         //| true -> TickerResponse(true, null, Some(Ticker(pair, bidPrice, askPrice, Some(lowPrice), Some(highPrice), Some(lastPrice))))
-        | false -> TickerResponse(false, __.Error, None)
+        | false -> TickerResponse(false, this.Error, None)
         | true -> 
             let ticker = Ticker(pair, bidPrice, askPrice, Some(lowPrice), Some(highPrice), Some(lastPrice))
             TickerResponse(true, null, Some(ticker))
