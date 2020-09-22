@@ -14,16 +14,16 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 ## Functionalities
 
 | Function                   | Description                                                     | Status
----                          | ---                                                             |---
+| ---                        | ---                                                             | ---
 | List Pairs                 | List pairs available on the exchange                            | Done
 | Get Ticker / Get Tickers   | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)         | Done
 | Get Balance                | List the owned and free amount of all the not empty currencies  | Done
-| Create Market Order        | Create a market order		                                       | TODO
-| Create Limit Order         | Create a market order	                                           | Done
+| Create Market Order        | Create a market order		                                   | TODO
+| Create Limit Order         | Create a market order	                                       | Done
 | List Open Orders           | List the active orders on the specified markets                 | Done
 | List Closed orders         | List completed orders                                           | Done
 | Withdraw                   | Withdraw a currency                                             | Done
-| List Withdrawals           | List of withdrawals                                             | Done
+| List Withdrawals           | List of withdrawals                                             | TODO
 
 
 
