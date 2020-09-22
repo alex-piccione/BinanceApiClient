@@ -10,7 +10,6 @@ namespace Example
         {
             Console.WriteLine("Binance API Client example");
 
-
             string publicKey = "";
             string secretKey = "";
 
@@ -29,7 +28,7 @@ namespace Example
             {
                 var result = client.CreateMarketOrder(CreateOrderRequest.Market(OrderSide.Buy, pair, amount));
 
-                Console.WriteLine($"Created market order. Reference: {result.reference} Price: {result.price}");
+                Console.WriteLine($"Created market order. Reference: {result.Reference} Price: {result.Price}");
             }
             catch (Exception exc)
             {

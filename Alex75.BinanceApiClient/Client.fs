@@ -89,7 +89,8 @@ type public Client(settings:Settings) =
                     ticker
                 else
                     match ticker_24h.Error with 
-                    | "Invalid symbol." -> raise (UnsupportedPair(pair))
+                    //| "Invalid symbol." -> raise (UnsupportedPair(pair))
+                    | "Invalid symbol." -> failwith "Pair is not supported"
                     | _ -> failwith ticker_24h.Error                          
 
         member this.GetExchangeInfo = 
@@ -148,7 +149,7 @@ type public Client(settings:Settings) =
 
             if response.IsSuccessStatusCode then      
                 let orderId, price = parser.ParseCreateOrderResponse(content)
-                { reference=orderId; price=price}
+                CreateOrderResult(orderId,price)
             else 
                 let error = parser.parse_error content
                 //match code with 
@@ -161,11 +162,12 @@ type public Client(settings:Settings) =
 
 
 
-        member this.ListOpenOrdersIsAvailable(): bool = false
-        member this.ListOpenOrders(): ICollection<OpenOrder> = 
+        member this.ListOpenOrdersIsAvailable = false
+        member this.ListOpenOrders() = 
             raise (System.NotImplementedException())
 
-        member this.ListOpenOrders_2(pairs: CurrencyPair[]): OpenOrder[] = 
+        member this.ListOpenOrdersOfCurrenciesIsAvailable = true
+        member this.ListOpenOrdersOfCurrencies (pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
             // todo: purge from invalid pairs        
@@ -187,7 +189,12 @@ type public Client(settings:Settings) =
             Parallel.ForEach(validPairs, getOrders) |> ignore
             orders.ToArray() |> Array.fold Array.append Array.empty<OpenOrder>
 
-        member this.ListClosedOrders(pairs: CurrencyPair[]): ClosedOrder[] = 
+
+        member this.ListClosedOrdersIsAvailable = false
+        member this.ListClosedOrders() = raise (System.NotImplementedException())
+
+        member this.ListClosedOrdersOfCurrenciesIsAvailable = true
+        member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
             // todo: purge from invalid pairs        
