@@ -10,7 +10,6 @@ Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alex75it/BinanceApiClient?label=GitHub)
 
 
-
 ## Functionalities
 
 | Function                   | Description                                                     | Status
