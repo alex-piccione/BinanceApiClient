@@ -44,7 +44,7 @@ type public Client(settings:Settings) =
     /// <summary>
     /// Creates a HMACSHA256 Signature based on the key and total parameters
     /// </summary>
-    /// <param name="key">The secret key</param>
+    /// <param name="privateKey">The secret key</param>
     /// <param name="totalParams">URL Encoded values that would usually be the query string for the request</param>
     let createHMACSignature (privateKey:string, totalParams:string) =    
         let messageBytes = Encoding.UTF8.GetBytes(totalParams)
@@ -226,7 +226,7 @@ type public Client(settings:Settings) =
 
         
 
-        member this.Withdraw(wallet: Wallet, amount: float): unit = 
+        member this.Withdraw(wallet: Wallet, amount: float) = 
             checkApiKeys()
 
             // Withdrawal can be done only on registered addresses
@@ -257,7 +257,6 @@ type public Client(settings:Settings) =
             // https://stackoverflow.com/questions/53177049/https-post-failure-c
             // documentation said POST but it only accept data in the querystring
             url <- f"%s?%s" url requestBody
-
            
             let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                     .WithHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -272,23 +271,15 @@ type public Client(settings:Settings) =
             // or for permission denied...
             // so it makes not possible decide which "model" is returned based on the HTTP status
 
-
-            //parser.parse_withdrawal
-
             if httpResponse.IsSuccessStatusCode then                    
-                let json = JsonConvert.DeserializeObject<JObject>(content)
-                    
+                let json = JsonConvert.DeserializeObject<JObject>(content)                    
                 let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
 
                 if isSuccess then
-                    let id =  json.["id"].Value<string>()
-                    ()
+                    json.["id"].Value<string>()
                 else 
                     let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
-                    //WithdrawResponse(false, message, null)
                     failwith message
-
             else 
                 let error = parser.parse_error content
-                //WithdrawResponse(false, sprintf "%s: %s" httpResponse.ReasonPhrase error, null)
                 failwith error
