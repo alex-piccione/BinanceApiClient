@@ -64,63 +64,6 @@ type public Client(settings:Settings) =
         let error = if response.IsSuccessStatusCode then null else parser.parse_error jsonContent
         (response, jsonContent, error)
 
-    member this.Withdraw_old(wallet: Wallet, amount: float) = 
-        checkApiKeys()
-
-        // Withdrawal can be done only on registered addresses
-        // Findout the registered address name ()
-        //let addressName = getAddressName wallet 
-
-        let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
-
-        let currency = wallet.Currency.UpperCase
-        let address = wallet.Address
-
-        //let mutable normalizedAddressTag = addressTag
-        //if currency = Currency.XRP && addressTag = "0" then normalizedAddressTag <- ""
-
-        let totalParams = 
-            //sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
-            sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&timestamp=%i&recvWindow=%i""" 
-                    currency
-                    address
-                    (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
-                    (amount.ToString(CultureInfo.InvariantCulture))                          
-                    (getServerTime())
-                    recvWindow
-
-        let signature = createHMACSignature(settings.SecretKey, totalParams)
-        let requestBody = totalParams + "&signature=" + signature
-
-        // https://stackoverflow.com/questions/53177049/https-post-failure-c
-        // documentation said POST but it only accept data in the querystring
-        url <- f"%s?%s" url requestBody
-   
-        let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                                .WithHeader("Content-Type", "application/x-www-form-urlencoded")
-                                .AllowHttpStatus("4xx")
-                                .PostStringAsync("")  // empty because requestBody is only accepted by querystring
-                                .Result
-
-        let content = httpResponse.Content.ReadAsStringAsync().Result
-
-
-        // Binance API returns 200 when the request fails for timestamp not synchronized
-        // or for permission denied...
-        // so it makes not possible decide which "model" is returned based on the HTTP status
-
-        if httpResponse.IsSuccessStatusCode then                    
-            let json = JsonConvert.DeserializeObject<JObject>(content)                    
-            let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
-
-            if isSuccess then
-                json.["id"].Value<string>()
-            else 
-                let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
-                failwith message
-        else 
-            let error = parser.parse_error content
-            failwith error
 
     interface IClient with
 
@@ -147,7 +90,7 @@ type public Client(settings:Settings) =
                 else
                     match ticker_24h.Error with 
                     | "Invalid symbol." -> failwithf "Pair %s is not supported" (pair.ToString())
-                    | _ -> failwith ticker_24h.Error                          
+                    | _ -> failwith ticker_24h.Error
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v3/exchangeInfo" baseUrl
@@ -201,7 +144,7 @@ type public Client(settings:Settings) =
 
             let content = response.Content.ReadAsStringAsync().Result
 
-            if response.IsSuccessStatusCode then      
+            if response.IsSuccessStatusCode then
                 let orderId, price = parser.ParseCreateOrderResponse(content)
                 CreateOrderResult(orderId,price)
             else 
@@ -250,7 +193,7 @@ type public Client(settings:Settings) =
         member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
-            // todo: purge from invalid pairs        
+            // todo: purge from invalid pairs
             let validPairs = 
                 (this :> IClient).ListPairs().ToArray()
                 |> Array.filter (fun pair -> (pairs |> Array.contains pair))
@@ -279,23 +222,18 @@ type public Client(settings:Settings) =
 
         member this.Withdraw(wallet: Wallet, amount: float) = 
              checkApiKeys()
-
              // doc: https://binance-docs.github.io/apidocs/spot/en/#withdraw-user_data
 
-             // Withdrawal can be done only on registered addresses
-             // Findout the registered address name ()
-             //let addressName = getAddressName wallet 
-             // POST /sapi/v1/capital/withdraw/apply
              let mutable url = $"{baseUrl}/sapi/v1/capital/withdraw/apply" 
 
              let totalParams = 
-                sprintf """coin=%s&address=%s&addressTag=%s&amount=%s&transactionFeeFlag=true&timestamp=%i&recvWindow=%i""" 
-                        wallet.Currency.UpperCase
-                        wallet.Address
-                        (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
-                        (amount.ToString(CultureInfo.InvariantCulture))
-                        (getServerTime())
-                        recvWindow
+                sprintf """coin=%s&address=%s&addressTag=%s&amount=%s&transactionFeeFlag=false&timestamp=%i&recvWindow=%i""" 
+                    wallet.Currency.UpperCase
+                    wallet.Address
+                    (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
+                    (amount.ToString(CultureInfo.InvariantCulture))
+                    (getServerTime())
+                    recvWindow
 
              let signature = createHMACSignature(settings.SecretKey, totalParams)
              let requestBody = totalParams + "&signature=" + signature
@@ -315,17 +253,14 @@ type public Client(settings:Settings) =
 
              // Binance API returns 200 when the request fails for timestamp not synchronized
              // or for permission denied...
-             // so it makes not possible decide which "model" is returned based on the HTTP status
+             // so it makes not possible to decide which "model" is returned based on the HTTP status
 
              if httpResponse.IsSuccessStatusCode then
                  let json = JsonConvert.DeserializeObject<JObject>(content)
-                 let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
-
-                 if isSuccess then
-                     json.["id"].Value<string>()
+                 if json.ContainsKey("msg") then
+                     failwith (json.["msg"].Value<string>())
                  else 
-                     let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
-                     failwith message
+                    json.["id"].Value<string>()
              else 
                  let error = parser.parse_error content
                  failwith error
