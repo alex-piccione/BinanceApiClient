@@ -12,6 +12,8 @@ open Alex75.BinanceApiClient
 type ClientTest () =
 
     let client = Client(settings.settings) :> IClient
+    // minimum withdrawal = 50 (07/07/2019)
+    let XRP_MIN_WITHDRAWAL = 25.0
 
     [<Test>]
     member this.``GetExchangeInfo`` () =
@@ -35,11 +37,11 @@ type ClientTest () =
 
 
     [<Test; Category("REQUIRES_API_KEY")>]
-    member this.``Get Balance`` () =        
-        settings.readSettings() |> ignore       
+    member this.``Get Balance`` () =
+        settings.readSettings() |> ignore
         let response = client.GetBalance()
         response |> should not' (be null)
-        //if not response.IsSuccess then failwith response.Error        
+        //if not response.IsSuccess then failwith response.Error
         //response.Assets |> should not' (be Empty)
 
 
@@ -49,16 +51,24 @@ type ClientTest () =
         settings.readSettings() |> ignore
         let wallet = XrpWallet(settings.withdrawalAddress)
 
-        // minimum withdrawal = 50 (07/07/2019)
-        let result = client.Withdraw(wallet, 25.0)
-        result |> should not' (be NullOrEmptyString)
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
+        response |> should not' (be NullOrEmptyString)
 
+    [<Test; Category("AFFECTS_BALANCE")>]
+    member this.``Withdraw XRP [when] has Destination Tag`` () =
+
+        settings.readSettings() |> ignore
+        let wallet = XrpWallet(settings.withdrawalAddress, 100)
+
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
+        response |> should not' (be NullOrEmptyString)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member this.``Withdraw XRP [when] destimation tag is zero`` () =
-
+    member this.``Withdraw XRP [when] destination tag is zero`` () =
+        // tag "0" returns the error "Address verification failed (code: -4007)"
         settings.readSettings() |> ignore
-        let wallet = XrpWallet(settings.withdrawalAddress, 0)    
+        let wallet = XrpWallet(settings.withdrawalAddress, 0)
 
-        client.Withdraw(wallet, 27.0)
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
+        response |> should not' (be NullOrEmptyString)
