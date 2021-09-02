@@ -12,6 +12,8 @@ open Alex75.BinanceApiClient
 type ClientTest () =
 
     let client = Client(settings.settings) :> IClient
+    // minimum withdrawal = 50 (07/07/2019)
+    let XRP_MIN_WITHDRAWAL = 25.0
 
     [<Test>]
     member this.``GetExchangeInfo`` () =
@@ -45,20 +47,28 @@ type ClientTest () =
 
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP`` () =
-        
+
         settings.readSettings() |> ignore
         let wallet = XrpWallet(settings.withdrawalAddress)
-        
-        // minimum withdrawal = 50 (07/07/2019)
-        let response = client.Withdraw(wallet, 25.0)
+
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
+        response |> should not' (be NullOrEmptyString)
+
+    [<Test; Category("AFFECTS_BALANCE")>]
+    member this.``Withdraw XRP [when] has Destination Tag`` () =
+
+        settings.readSettings() |> ignore
+        let wallet = XrpWallet(settings.withdrawalAddress, 100)
+
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
         response |> should not' (be NullOrEmptyString)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
-    member this.``Withdraw XRP [when] destimation tag is zero`` () =
+    member this.``Withdraw XRP [when] destination tag is zero`` () =
 
         settings.readSettings() |> ignore
         let wallet = XrpWallet(settings.withdrawalAddress, 0)
 
-        let response = client.Withdraw(wallet, 27.0)
+        let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
         response |> should not' (be NullOrEmptyString)
