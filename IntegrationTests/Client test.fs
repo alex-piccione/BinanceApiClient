@@ -45,12 +45,14 @@ type ClientTest () =
 
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP`` () =
-        
+
         settings.readSettings() |> ignore
-        let wallet = XrpWallet(settings.withdrawalAddress)    
-        
+        let wallet = XrpWallet(settings.withdrawalAddress)
+
         // minimum withdrawal = 50 (07/07/2019)
-        client.Withdraw(wallet, 25.0)
+        let result = client.Withdraw(wallet, 25.0)
+        result |> should not' (be NullOrEmptyString)
+
 
 
     [<Test; Category("AFFECTS_BALANCE")>]

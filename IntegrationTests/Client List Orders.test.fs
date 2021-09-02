@@ -20,7 +20,7 @@ type ClientTest_ListOrders () =
             //CurrencyPair.BTC_EUR
             CurrencyPair("TRX", "XRP")
         |])
-        orders |> should not' (be Null)      
+        orders |> should not' (be Null)
         
     [<Test>]
     member this.``List Open Orders [when] invalid pairs are passsed`` () =
@@ -29,7 +29,7 @@ type ClientTest_ListOrders () =
             CurrencyPair("XTZ", "XRP")
             CurrencyPair("AAA", "BBB")
         |])
-        orders |> should not' (be Null)      
+        orders |> should not' (be Null)
 
 
     [<Test>]
@@ -39,4 +39,4 @@ type ClientTest_ListOrders () =
             //CurrencyPair.BTC_EUR
             CurrencyPair("TRX", "XRP")
         |])
-        orders |> should not' (be Null)   
+        orders |> should not' (be Null)

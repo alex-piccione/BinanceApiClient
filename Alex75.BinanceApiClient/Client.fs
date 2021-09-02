@@ -216,15 +216,17 @@ type public Client(settings:Settings) =
 
 
         member this.ListWithdralsIsAvailable = false
-        member this.ListWithdrals(sinceWhen: DateTime): Withdrawal [] = 
+        member this.ListWithdrals(sinceWhen: DateTime): Withdrawal[] =
+
+
+
             raise (System.NotImplementedException())
-        
-        
+
+
         member this.ListWithdralsOfCurrenciesIsAvailable = false
         member this.ListWithdralsOfCurrencies(sinceWhen: DateTime, pairs: CurrencyPair []): Withdrawal [] = 
             raise (System.NotImplementedException())
 
-        
 
         member this.Withdraw(wallet: Wallet, amount: float) = 
             checkApiKeys()

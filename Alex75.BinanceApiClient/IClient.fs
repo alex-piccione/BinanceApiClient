@@ -5,7 +5,6 @@ open Alex75.Cryptocurrencies
 open models
 
 
-
 [<Interface>]
 type IClient =
     inherit IApiClient

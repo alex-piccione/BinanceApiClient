@@ -4,6 +4,7 @@ Simple client interface to facilitate the use of some **Binance** API.
 Tested thorougly with _XRP_ currency.  
   
 Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_
+Repository: https://github.com/alex-piccione/BinanceApiClient
 
 [![NuGet](https://img.shields.io/nuget/v/Alex75.BinanceApiClient.svg)](https://www.nuget.org/packages/Alex75.BinanceApiClient) 
 [![Build Status](https://alex75.visualstudio.com/Binance%20API%20Client/_apis/build/status/Build%20v3?branchName=master)](https://alex75.visualstudio.com/Binance%20API%20Client/_build/latest?definitionId=24&branchName=master) 
@@ -45,10 +46,10 @@ I don't know what HTTP Status Code is returned.
 Source code on GitHub.  
 CI/DD in Azure DevOps.  
   
-Binance API docs: https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+Binance API docs: 
+- https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+- https://binance-docs.github.io/apidocs/spot/en/
 
-  
-      
 
 [![HitCount](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient.svg)](http://hits.dwyl.io/alex75it/alex75it/BinanceApiClient)
 
