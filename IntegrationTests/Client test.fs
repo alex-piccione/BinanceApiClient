@@ -35,11 +35,11 @@ type ClientTest () =
 
 
     [<Test; Category("REQUIRES_API_KEY")>]
-    member this.``Get Balance`` () =        
-        settings.readSettings() |> ignore       
+    member this.``Get Balance`` () =
+        settings.readSettings() |> ignore
         let response = client.GetBalance()
         response |> should not' (be null)
-        //if not response.IsSuccess then failwith response.Error        
+        //if not response.IsSuccess then failwith response.Error
         //response.Assets |> should not' (be Empty)
 
 
@@ -47,16 +47,18 @@ type ClientTest () =
     member this.``Withdraw XRP`` () =
         
         settings.readSettings() |> ignore
-        let wallet = XrpWallet(settings.withdrawalAddress)    
+        let wallet = XrpWallet(settings.withdrawalAddress)
         
         // minimum withdrawal = 50 (07/07/2019)
-        client.Withdraw(wallet, 25.0)
+        let response = client.Withdraw(wallet, 25.0)
+        response |> should not' (be NullOrEmptyString)
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP [when] destimation tag is zero`` () =
 
         settings.readSettings() |> ignore
-        let wallet = XrpWallet(settings.withdrawalAddress, 0)    
+        let wallet = XrpWallet(settings.withdrawalAddress, 0)
 
-        client.Withdraw(wallet, 27.0)
+        let response = client.Withdraw(wallet, 27.0)
+        response |> should not' (be NullOrEmptyString)
