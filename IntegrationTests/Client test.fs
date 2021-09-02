@@ -66,7 +66,7 @@ type ClientTest () =
 
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP [when] destination tag is zero`` () =
-
+        // tag "0" returns the error "Address verification failed (code: -4007)"
         settings.readSettings() |> ignore
         let wallet = XrpWallet(settings.withdrawalAddress, 0)
 

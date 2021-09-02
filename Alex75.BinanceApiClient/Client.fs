@@ -90,7 +90,7 @@ type public Client(settings:Settings) =
                 else
                     match ticker_24h.Error with 
                     | "Invalid symbol." -> failwithf "Pair %s is not supported" (pair.ToString())
-                    | _ -> failwith ticker_24h.Error                          
+                    | _ -> failwith ticker_24h.Error
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v3/exchangeInfo" baseUrl
@@ -144,7 +144,7 @@ type public Client(settings:Settings) =
 
             let content = response.Content.ReadAsStringAsync().Result
 
-            if response.IsSuccessStatusCode then      
+            if response.IsSuccessStatusCode then
                 let orderId, price = parser.ParseCreateOrderResponse(content)
                 CreateOrderResult(orderId,price)
             else 
@@ -193,7 +193,7 @@ type public Client(settings:Settings) =
         member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
-            // todo: purge from invalid pairs        
+            // todo: purge from invalid pairs
             let validPairs = 
                 (this :> IClient).ListPairs().ToArray()
                 |> Array.filter (fun pair -> (pairs |> Array.contains pair))
@@ -222,19 +222,18 @@ type public Client(settings:Settings) =
 
         member this.Withdraw(wallet: Wallet, amount: float) = 
              checkApiKeys()
-
              // doc: https://binance-docs.github.io/apidocs/spot/en/#withdraw-user_data
 
              let mutable url = $"{baseUrl}/sapi/v1/capital/withdraw/apply" 
 
              let totalParams = 
                 sprintf """coin=%s&address=%s&addressTag=%s&amount=%s&transactionFeeFlag=false&timestamp=%i&recvWindow=%i""" 
-                        wallet.Currency.UpperCase
-                        wallet.Address
-                        (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
-                        (amount.ToString(CultureInfo.InvariantCulture))
-                        (getServerTime())
-                        recvWindow
+                    wallet.Currency.UpperCase
+                    wallet.Address
+                    (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
+                    (amount.ToString(CultureInfo.InvariantCulture))
+                    (getServerTime())
+                    recvWindow
 
              let signature = createHMACSignature(settings.SecretKey, totalParams)
              let requestBody = totalParams + "&signature=" + signature
