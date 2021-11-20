@@ -11,7 +11,7 @@ open Alex75.BinanceApiClient
 [<Category("Client")>]
 type ClientTest () =
 
-    let client = Client(settings.settings) :> IApiClientPrivate
+    let client = Client(settings.settings) :> IApiClient
 
 
     [<Test>]
@@ -30,4 +30,4 @@ type ClientTest () =
     [<Test>]
     member this.``GetTicker [when] pair do not exists [should] raise an error`` () =
         let pair = CurrencyPair("XRP", "NNN")
-        (fun () -> client.GetTicker(pair) |> ignore) |> should throw typeof<Exception>
+        (fun () -> client.GetTicker(pair) |> ignore) |> should throw (typeof<Exception>)

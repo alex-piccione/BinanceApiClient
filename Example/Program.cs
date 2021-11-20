@@ -10,7 +10,6 @@ namespace Example
         {
             Console.WriteLine("Binance API Client example");
 
-
             string publicKey = "";
             string secretKey = "";
 

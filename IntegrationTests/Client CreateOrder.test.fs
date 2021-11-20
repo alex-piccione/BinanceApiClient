@@ -8,12 +8,12 @@ open Alex75.Cryptocurrencies
 open Alex75.BinanceApiClient
 
 
-[<Category("Client")>]
+[<Category("Client"); Category("AFFECTS_BALANCE")>]
 type ClientTest_Order () =
 
     let client = Client(settings.settings) :> IClient
 
-    [<Test; Category("AFFECTS_BALANCE")>]
+    [<Test>]
     member this.``CreateMarketOrder Buy 50 XRP with BTC`` () =
         let pair = CurrencyPair("XRP", "btc")
         let result = client.CreateMarketOrder( CreateOrderRequest.Market(OrderSide.Buy, pair, 50m))
@@ -22,7 +22,7 @@ type ClientTest_Order () =
         result.Price |> should not' (be Null)
 
 
-    [<Test; Category("AFFECTS_BALANCE")>]
+    [<Test>]
     member this.``CreateMarketOrder Sell 20 XRP for BTC`` () =
         //let pair = CurrencyPair("btc", "xrp") invalid symbol
         let pair = CurrencyPair("xrp", "btc")
@@ -35,7 +35,7 @@ type ClientTest_Order () =
         result.Price |> should not' (be Null)
 
 
-    [<Test; Category("AFFECTS_BALANCE")>]
+    [<Test>]
     member this.``CreateMarketOrder Buy 30 XRP with EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 30m  // XRP
@@ -47,7 +47,7 @@ type ClientTest_Order () =
         result.Price |> should not' (be Null)
 
 
-    [<Test; Category("AFFECTS_BALANCE")>]
+    [<Test>]
     member this.``CreateMarketOrder Sell 80 XRP for EUR`` () =
         let pair = CurrencyPair("xrp", "eur")
         let amount = 80m  // XRP
@@ -58,18 +58,3 @@ type ClientTest_Order () =
 
         result.Reference |> should not' (be NullOrEmptyString)
         result.Price |> should not' (be Null)
-
-
-    //[<Test; Category("AFFECTS_BALANCE")>]
-    //member __.``CreateLimitOrder`` () =
-    //    let pair = CurrencyPair("XRP", "eur")
-    //    let response = client.CreateLimitOrder(pair, OrderSide.Buy, 50m, 0.50m)
-
-
-    //    response |> should not' (be null)  
-    //    if not response.IsSuccess then failwith response.Error
-
-    //    response.IsSuccess |> should equal true 
-        
-
-

@@ -63,7 +63,7 @@ type public Client(settings:Settings) =
         let jsonContent = response.Content.ReadAsStringAsync().Result
         let error = if response.IsSuccessStatusCode then null else parser.parse_error jsonContent
         (response, jsonContent, error)
-    
+
 
     interface IClient with
 
@@ -144,9 +144,9 @@ type public Client(settings:Settings) =
 
             let content = response.Content.ReadAsStringAsync().Result
 
-            if response.IsSuccessStatusCode then      
+            if response.IsSuccessStatusCode then
                 let orderId, price = parser.ParseCreateOrderResponse(content)
-                CreateOrderResult(orderId, price)
+                CreateOrderResult(orderId,price)
             else 
                 let error = parser.parse_error content
                 //match code with 
@@ -159,10 +159,11 @@ type public Client(settings:Settings) =
 
 
         member this.ListOpenOrdersIsAvailable = false
-        member this.ListOpenOrders() = raise (System.NotImplementedException("Use ListOpenOrdersOfCurrencies()"))
+        member this.ListOpenOrders() = 
+            raise (System.NotImplementedException())
 
         member this.ListOpenOrdersOfCurrenciesIsAvailable = true
-        member this.ListOpenOrdersOfCurrencies(pairs: CurrencyPair[]): OpenOrder[] = 
+        member this.ListOpenOrdersOfCurrencies (pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
             // todo: purge from invalid pairs
@@ -211,63 +212,55 @@ type public Client(settings:Settings) =
             orders.ToArray() |> Array.fold Array.append Array.empty<ClosedOrder>
 
 
-        member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
-            checkApiKeys()
-            let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
-
-            let mutable normalizedAddressTag = addressTag
-            if currency = Currency.XRP && addressTag = "0" then normalizedAddressTag <- ""
-
-            let totalParams = 
-                sprintf """asset=%s&address=%s&addressTag=%s&amount=%s&name=%s&timestamp=%i&recvWindow=%i""" 
-                        (currency.ToString().ToUpper())
-                        address
-                        (if String.IsNullOrEmpty(addressTag) then "" else (System.Net.WebUtility.UrlEncode(normalizedAddressTag)))
-                        (amount.ToString(CultureInfo.InvariantCulture))  
-                        addressDescription
-                        (getServerTime())
-                        recvWindow
-
-            let signature = createHMACSignature(settings.SecretKey, totalParams)
-            let requestBody = totalParams + "&signature=" + signature
-
-            // https://stackoverflow.com/questions/53177049/https-post-failure-c
-            // documentation said POST but it only accept data in the querystring
-            url <- f"%s?%s" url requestBody
-
-            try
-                let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
-                                      .WithHeader("Content-Type", "application/x-www-form-urlencoded")
-                                      .AllowHttpStatus("4xx")
-                                      .PostStringAsync("")  // empty because requestBody is only accepted by querystring
-                                      .Result
-
-                let content = httpResponse.Content.ReadAsStringAsync().Result
-
-
-                // fucking Binance API returns 200 when the request fails for timestamp not synchronized
-                // or for permission denied...
-                // so it makes not possible decide which "model" is returned based on the HTTP status
-
-                if httpResponse.IsSuccessStatusCode then
-                    let json = JsonConvert.DeserializeObject<JObject>(content)
-                    
-                    let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()
-
-                    if isSuccess then
-                        let id =  json.["id"].Value<string>()
-                        WithdrawResponse(true, null, id)
-                    else 
-                        let message = if json.ContainsKey("msg") then json.["msg"].Value<string>() else json.ToString()
-                        WithdrawResponse(false, message, null)
-
-                else 
-                    let error = parser.parse_error content
-                    WithdrawResponse(false, sprintf "%s: %s" httpResponse.ReasonPhrase error, null)
-
-            with e -> WithdrawResponse(false, e.Message, null)
-
-
-        member this.ListWithdrawals: Withdrawal [] = 
-            checkApiKeys()
+        member this.ListWithdralsIsAvailable = false
+        member this.ListWithdrals(sinceWhen: DateTime): Withdrawal [] = 
             raise (System.NotImplementedException())
+
+        member this.ListWithdralsOfCurrenciesIsAvailable = false
+        member this.ListWithdralsOfCurrencies(sinceWhen: DateTime, pairs: CurrencyPair []): Withdrawal [] = 
+            raise (System.NotImplementedException())
+
+        member this.Withdraw(wallet: Wallet, amount: float) = 
+             checkApiKeys()
+             // doc: https://binance-docs.github.io/apidocs/spot/en/#withdraw-user_data
+
+             let mutable url = $"{baseUrl}/sapi/v1/capital/withdraw/apply" 
+
+             let totalParams = 
+                sprintf """coin=%s&address=%s&addressTag=%s&amount=%s&transactionFeeFlag=false&timestamp=%i&recvWindow=%i""" 
+                    wallet.Currency.UpperCase
+                    wallet.Address
+                    (System.Net.WebUtility.UrlEncode(wallet.IdentifierText))
+                    (amount.ToString(CultureInfo.InvariantCulture))
+                    (getServerTime())
+                    recvWindow
+
+             let signature = createHMACSignature(settings.SecretKey, totalParams)
+             let requestBody = totalParams + "&signature=" + signature
+
+             // https://stackoverflow.com/questions/53177049/https-post-failure-c
+             // documentation said POST but it only accept data in the querystring
+             url <- f"%s?%s" url requestBody
+            
+             let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                                     .WithHeader("Content-Type", "application/x-www-form-urlencoded")
+                                     .AllowHttpStatus("4xx")
+                                     .PostStringAsync("")  // empty because requestBody is only accepted by querystring
+                                     .Result
+
+             let content = httpResponse.Content.ReadAsStringAsync().Result
+
+
+             // Binance API returns 200 when the request fails for timestamp not synchronized
+             // or for permission denied...
+             // so it makes not possible to decide which "model" is returned based on the HTTP status
+
+             if httpResponse.IsSuccessStatusCode then
+                 let json = JsonConvert.DeserializeObject<JObject>(content)
+                 if json.ContainsKey("msg") then
+                     failwith (json.["msg"].Value<string>())
+                 else 
+                    json.["id"].Value<string>()
+             else 
+                 let error = parser.parse_error content
+                 failwith error
