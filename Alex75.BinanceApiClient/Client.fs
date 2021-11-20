@@ -211,11 +211,6 @@ type public Client(settings:Settings) =
             orders.ToArray() |> Array.fold Array.append Array.empty<ClosedOrder>
 
 
-        member this.Withdraw_new (currency, address, addressTag, addressDescription, amount) = 
-            checkApiKeys()
-            let mutable url = f"%s/sapi/v1/capital/withdraw/apply" baseUrl
-            //POST /sapi/v1/capital/withdraw/apply 
-
         member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
             checkApiKeys()
             let mutable url = f"%s/wapi/v3/withdraw.html" baseUrl
