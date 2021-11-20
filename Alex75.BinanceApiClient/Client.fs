@@ -32,9 +32,9 @@ type public Client(settings:Settings) =
 
     let checkApiKeys () =
         if String.IsNullOrEmpty settings.PublicKey || String.IsNullOrEmpty settings.SecretKey 
-        then failwithf "Private methods requires API keys to be set"        
+        then failwithf "Private methods requires API keys to be set"
 
-    let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other    
+    let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
     let getServerTime () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
@@ -44,9 +44,9 @@ type public Client(settings:Settings) =
     /// <summary>
     /// Creates a HMACSHA256 Signature based on the key and total parameters
     /// </summary>
-    /// <param name="key">The secret key</param>
+    /// <param name="privateKey">The secret key</param>
     /// <param name="totalParams">URL Encoded values that would usually be the query string for the request</param>
-    let createHMACSignature (privateKey:string, totalParams:string) =    
+    let createHMACSignature (privateKey:string, totalParams:string) =
         let messageBytes = Encoding.UTF8.GetBytes(totalParams)
         let keyBytes = Encoding.UTF8.GetBytes(privateKey)
         let hash = new HMACSHA256(keyBytes)
@@ -67,37 +67,36 @@ type public Client(settings:Settings) =
 
     interface IClient with
 
-        member this.ListPairs()  = 
+        member this.ListPairs() =
             match cache.GetPairs assets_cache_time with
             | Some pairs -> pairs
-            | _ -> 
+            | _ ->
                 let pairs = parser.parse_pairs ( (f"%s/api/v3/exchangeInfo" baseUrl).GetStringAsync().Result )
                 cache.SetPairs pairs
-                pairs :> ICollection<CurrencyPair>   
+                pairs :> ICollection<CurrencyPair>
 
         member this.GetTicker(pair: CurrencyPair): Ticker = 
             match cache.GetTicker pair settings.TickerCacheDuration with 
             | Some ticker -> ticker
-            | _ ->         
+            | _ ->
                 let url = f"%s/api/v3/ticker/24hr?symbol=%s" baseUrl (getSymbol pair)
                 let ticker_24h = url.AllowHttpStatus("4xx").GetJsonAsync<models.Ticker_24h>().Result
 
                 if ticker_24h.IsSuccess 
                 then
                     let ticker = Ticker(pair, ticker_24h.BidPrice, ticker_24h.AskPrice, Some ticker_24h.LowPrice, Some ticker_24h.HighPrice, Some ticker_24h.LastPrice)
-                    cache.SetTicker ticker     
+                    cache.SetTicker ticker
                     ticker
                 else
-                    match ticker_24h.Error with 
+                    match ticker_24h.Error with
                     | "Invalid symbol." -> failwithf "Pair %s is not supported" (pair.ToString())
-                    | _ -> failwith ticker_24h.Error                          
+                    | _ -> failwith ticker_24h.Error
 
         member this.GetExchangeInfo = 
             let url = f"%s/api/v3/exchangeInfo" baseUrl
             // todo: parsing not implemented yet
             let response = url.GetStringAsync().Result
             response
-
 
 
         member this.GetBalance(): AccountBalance = 
@@ -120,11 +119,11 @@ type public Client(settings:Settings) =
                     cache.SetAccountBalance balance
                     balance
                 else failwith (parser.parse_error jsonContent)
-                  
+
 
         member this.CreateMarketOrder(request: CreateOrderRequest): CreateOrderResult = 
             checkApiKeys()
-            let url = f"%s/api/v3/order" baseUrl           
+            let url = f"%s/api/v3/order" baseUrl
             
             let totalParams = f"""symbol=%s&side=%s&type=%s&quantity=%s&timestamp=%i&recvWindow=%i"""
                                (getSymbol request.Pair) 
@@ -159,7 +158,6 @@ type public Client(settings:Settings) =
             raise (System.NotImplementedException())
 
 
-
         member this.ListOpenOrdersIsAvailable = false
         member this.ListOpenOrders() = raise (System.NotImplementedException("Use ListOpenOrdersOfCurrencies()"))
 
@@ -167,7 +165,7 @@ type public Client(settings:Settings) =
         member this.ListOpenOrdersOfCurrencies(pairs: CurrencyPair[]): OpenOrder[] = 
             checkApiKeys()
 
-            // todo: purge from invalid pairs        
+            // todo: purge from invalid pairs
             let validPairs = 
                 (this :> IClient).ListPairs().ToArray()
                 |> Array.filter (fun pair -> (pairs |> Array.contains pair))
@@ -194,7 +192,7 @@ type public Client(settings:Settings) =
         member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
-            // todo: purge from invalid pairs        
+            // todo: remove invalid pairs
             let validPairs = 
                 (this :> IClient).ListPairs().ToArray()
                 |> Array.filter (fun pair -> (pairs |> Array.contains pair))
@@ -212,6 +210,11 @@ type public Client(settings:Settings) =
             Parallel.ForEach(validPairs, getOrders) |> ignore
             orders.ToArray() |> Array.fold Array.append Array.empty<ClosedOrder>
 
+
+        member this.Withdraw_new (currency, address, addressTag, addressDescription, amount) = 
+            checkApiKeys()
+            let mutable url = f"%s/sapi/v1/capital/withdraw/apply" baseUrl
+            //POST /sapi/v1/capital/withdraw/apply 
 
         member this.Withdraw (currency, address, addressTag, addressDescription, amount) = 
             checkApiKeys()
@@ -237,7 +240,7 @@ type public Client(settings:Settings) =
             // documentation said POST but it only accept data in the querystring
             url <- f"%s?%s" url requestBody
 
-            try                
+            try
                 let httpResponse = url.WithHeader("X-MBX-APIKEY", settings.PublicKey)
                                       .WithHeader("Content-Type", "application/x-www-form-urlencoded")
                                       .AllowHttpStatus("4xx")
@@ -251,7 +254,7 @@ type public Client(settings:Settings) =
                 // or for permission denied...
                 // so it makes not possible decide which "model" is returned based on the HTTP status
 
-                if httpResponse.IsSuccessStatusCode then                    
+                if httpResponse.IsSuccessStatusCode then
                     let json = JsonConvert.DeserializeObject<JObject>(content)
                     
                     let isSuccess = json.ContainsKey("success") && json.["success"].Value<bool>()

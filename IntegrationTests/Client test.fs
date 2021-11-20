@@ -35,11 +35,11 @@ type ClientTest () =
 
 
     [<Test; Category("REQUIRES_API_KEY")>]
-    member this.``Get Balance`` () =        
-        settings.readSettings() |> ignore       
+    member this.``Get Balance`` () =
+        settings.readSettings() |> ignore
         let response = client.GetBalance()
         response |> should not' (be null)
-        //if not response.IsSuccess then failwith response.Error        
+        //if not response.IsSuccess then failwith response.Error
         //response.Assets |> should not' (be Empty)
 
 
@@ -65,7 +65,7 @@ type ClientTest () =
 
         settings.readSettings() |> ignore
         let address = settings.withdrawalAddress
-        let addressTag = "0"  
+        let addressTag = "0"
 
         let response = client.Withdraw(Currency.XRP, address, addressTag, "test", 25m)
 
