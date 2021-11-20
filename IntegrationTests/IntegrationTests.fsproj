@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <AssemblyName>IntegrationTests</AssemblyName>
     <UserSecretsId>Alex75.BinanceApiClient-79043534-af9b-475e-9b77-7bc83c77c156</UserSecretsId>
   </PropertyGroup>
 
