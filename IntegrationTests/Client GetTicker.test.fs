@@ -5,7 +5,6 @@ open NUnit.Framework
 open FsUnit
 
 open Alex75.Cryptocurrencies
-open Alex75.Cryptocurrencies.Exchanges
 open Alex75.BinanceApiClient
 
 [<Category("Client")>]
