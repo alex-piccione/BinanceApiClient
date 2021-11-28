@@ -10,9 +10,9 @@
 
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="6.0.1" />
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.86" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.104" />
     <PackageReference Include="FsUnit" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
     <PackageReference Include="nunit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
       <PrivateAssets>all</PrivateAssets>
