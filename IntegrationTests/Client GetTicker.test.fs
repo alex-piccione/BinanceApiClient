@@ -1,18 +1,15 @@
-﻿module Client_GetTicker_test
+﻿module IntegrationTests.Client_GetTicker_test
 
 open System
 open NUnit.Framework
 open FsUnit
-
 open Alex75.Cryptocurrencies
-open Alex75.Cryptocurrencies.Exchanges
 open Alex75.BinanceApiClient
 
 [<Category("Client")>]
 type ClientTest () =
 
     let client = Client(settings.settings) :> IApiClient
-
 
     [<Test>]
     member this.``GetTicker`` () =
@@ -25,7 +22,6 @@ type ClientTest () =
         ticker.Low.IsSome |> should be True
         ticker.High.IsSome |> should be True
         ticker.Last.IsSome |> should be True
-
 
     [<Test>]
     member this.``GetTicker [when] pair do not exists [should] raise an error`` () =

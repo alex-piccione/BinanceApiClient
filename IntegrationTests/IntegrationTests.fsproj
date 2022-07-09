@@ -24,6 +24,8 @@
     <Compile Include="Client GetTicker.test.fs" />
     <Compile Include="Client CreateOrder.test.fs" />
     <Compile Include="Client List Orders.test.fs" />
+    <Compile Include="Client Withdraw.fs" />
+    <Compile Include="Client List Withdrawals.test.fs" />
   </ItemGroup>
 
   <ItemGroup>
