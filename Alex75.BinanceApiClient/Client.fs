@@ -65,6 +65,23 @@ type public Client(settings:Settings) =
         (response, jsonContent, error)
 
 
+    let getStacking () =
+        //GET /sapi/v1/staking/productList
+        let url = f"%s/sapi/v1/staking/position" baseUrl 
+
+        // product paramenter (mandatory)
+        //"STAKING" for Locked Staking, "F_DEFI" for flexible DeFi Staking, "L_DEFI" for locked DeFi Staking
+
+
+        let parameters = f"timestamp=%i&product=%s" (getServerTime()) "STAKING"
+        let signature = createHMACSignature(settings.SecretKey, parameters)
+
+        let response = (f"%s?%s&signature=%s" url parameters signature)
+                        .WithHeader("X-MBX-APIKEY", settings.PublicKey)
+                        .AllowAnyHttpStatus().GetAsync().Result
+        let jsonContent = response.Content.ReadAsStringAsync().Result
+        jsonContent
+
     interface IClient with
 
         member this.ListPairs() =
@@ -101,10 +118,13 @@ type public Client(settings:Settings) =
 
         member this.GetBalance(): AccountBalance = 
             checkApiKeys()
+
+            let stacking = getStacking()
+
             match cache.GetAccountBalance balance_cache_time with
             | Some balance -> balance
             | _ -> 
-                let url = f"%s/api/v3/account?" baseUrl 
+                let url = f"%s/api/v3/account" baseUrl 
 
                 let parameters = f"timestamp=%i" (getServerTime())
                 let signature = createHMACSignature(settings.SecretKey, parameters)
