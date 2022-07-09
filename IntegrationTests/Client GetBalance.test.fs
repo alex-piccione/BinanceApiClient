@@ -5,7 +5,7 @@ open FsUnit
 open Alex75.Cryptocurrencies
 open Alex75.BinanceApiClient
 
-[<Category("Client")>]
+[<Category("Client"); Category("AFFECTS_BALANCE")>]
 type GetBalance () =
 
     let client = Client(settings.settings) :> IApiClientPrivate
