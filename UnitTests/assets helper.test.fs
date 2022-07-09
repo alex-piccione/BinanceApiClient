@@ -9,7 +9,7 @@ open Alex75.Cryptocurrencies
 [<Test>]
 let ``correctAssets set non-fixed Stacking into correct asset as Stacking``() =
 
-    // Stacking assets are returned in a separate row and thecurrency is prefixed with "LD"
+    // Some Stacking assets are returned in a separate row and thecurrency is prefixed with "LD"
     let balance = [
         CurrencyBalance(Currency("AAA"), 100, 100, 0, 0, 0) // free asset
         CurrencyBalance(Currency("LDAAA"), 50, 50, 0, 0, 0) // Stacking asset
