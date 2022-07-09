@@ -1,7 +1,6 @@
 ﻿module settings
 
 open System
-
 open Alex75.BinanceApiClient
 open Microsoft.Extensions.Configuration
 
@@ -13,7 +12,7 @@ let readSettings () =
     withdrawalAddress <- configuration.["withdrawal address"]
     let publicKey = configuration.["public key"]
     let secretKey = configuration.["secret key"]
-       
+ 
     { TickerCacheDuration=TimeSpan.FromSeconds(60.); PublicKey=publicKey; SecretKey=secretKey; }
 
 let settings = readSettings()

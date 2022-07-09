@@ -1,7 +1,9 @@
 # Binance API Client
 
 Simple client interface to facilitate the use of some **Binance** API.  
+[Binance REST API documentation](https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md).  
 Tested thorougly with _XRP_ currency.  
+Repository:  [Azure DevOps](https://alex75.visualstudio.com/Binance%20API%20Client)  
   
 Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_  
 Repository: https://github.com/alex-piccione/BinanceApiClient
@@ -40,6 +42,9 @@ I don't know what HTTP Status Code is returned.
   Withdraw XRP has a minimum quantity of 25 become 50 (2019-07-07).  
   Sell XRP has a minimum quantity of 80 ?!
 
+- Withdraw crypto can be suspended.  
+  
+  Can't find and endpoint to know this in advance.  
 
 ## For developers
 

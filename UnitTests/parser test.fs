@@ -39,8 +39,9 @@ let ``parse account response`` () =
 
     balance |> should not' (be null)
     balance.HasCurrency(Currency.BTC) |> should be True
-    balance.[Currency.BTC].AvailableAmount |> should equal 4723846.89208129 
-    balance.[Currency.BTC].OwnedAmount |> should equal (4723846.89208129 + 10.0)
+    balance.[Currency.BTC].Free |> should equal 4723846.89208129
+    balance.[Currency.BTC].NotFree |> should equal 10.0
+    balance.[Currency.BTC].Total |> should equal (4723846.89208129 + 10.0)
     //[Currency.BTC] |> should equal (4723846.89208129m + 10m)
     //response.Assets.[Currency.LTC] |> should equal (4763368.68006011m + 20m)
 

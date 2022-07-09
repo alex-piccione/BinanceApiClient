@@ -3,19 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <AssemblyName>IntegrationTests</AssemblyName>
     <UserSecretsId>Alex75.BinanceApiClient-79043534-af9b-475e-9b77-7bc83c77c156</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.86" />
-    <PackageReference Include="FsUnit" Version="4.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-    <PackageReference Include="nunit" Version="3.13.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
+    <PackageReference Update="FSharp.Core" Version="6.0.1" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.104" />
+    <PackageReference Include="FsUnit" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="nunit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="5.0.1" />
   </ItemGroup>
 
 </Project>
