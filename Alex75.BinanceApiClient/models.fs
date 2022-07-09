@@ -2,8 +2,6 @@
 
 open Alex75.Cryptocurrencies
 
-
-
 type ServerTime = {serverTime:int64}
 
 [<AbstractClass>]
@@ -14,7 +12,6 @@ type Response (isSuccess:bool, error:string) =
 type TickerResponse (isSuccess:bool, error:string, ticker:Option<Ticker>) =
     inherit Response( isSuccess, error) 
     member __.Ticker = ticker
-
    
 
 // Binance API response

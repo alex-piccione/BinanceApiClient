@@ -42,12 +42,15 @@ type ClientTest () =
         response |> should not' (be null)
         //if not response.IsSuccess then failwith response.Error
         //response.Assets |> should not' (be Empty)
+<<<<<<< HEAD
 
 
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP`` () =
+
         settings.readSettings() |> ignore
         let wallet = XrpWallet(settings.withdrawalAddress)
+
         let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
         response |> should not' (be NullOrEmptyString)
 
@@ -60,6 +63,7 @@ type ClientTest () =
         let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
         response |> should not' (be NullOrEmptyString)
 
+
     [<Test; Category("AFFECTS_BALANCE")>]
     member this.``Withdraw XRP [when] destination tag is zero`` () =
         // tag "0" returns the error "Address verification failed (code: -4007)"
@@ -68,3 +72,5 @@ type ClientTest () =
 
         let response = client.Withdraw(wallet, XRP_MIN_WITHDRAWAL)
         response |> should not' (be NullOrEmptyString)
+=======
+>>>>>>> master

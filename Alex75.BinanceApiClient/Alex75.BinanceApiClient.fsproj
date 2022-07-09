@@ -13,9 +13,11 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageProjectUrl>https://github.com/alex75it/Alex75.BinanceApiClient</PackageProjectUrl>
     <PackageIcon>Alex75.BinanceApiClient.png</PackageIcon>
+    <UserSecretsId>Alex75.BinanceApiClient-79043534-af9b-475e-9b77-7bc83c77c156</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="assets helper.fs" />
     <Compile Include="models.fs" />
     <Compile Include="parser.fs" />
     <Compile Include="Orders.fs" />
@@ -24,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.86" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.4.107" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
   </ItemGroup>
 
@@ -36,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="5.0.1" />
+    <PackageReference Update="FSharp.Core" Version="6.0.5" />
   </ItemGroup>
 
 </Project>

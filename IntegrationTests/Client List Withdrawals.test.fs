@@ -9,7 +9,7 @@ open Alex75.BinanceApiClient
 
 
 [<Category("Client"); Category("REQUIRES_API_KEY")>]
-type ``List Orders`` () =
+type ClientTest_ListOrders () =
 
     let client = Client(settings.settings) :> IClient
 

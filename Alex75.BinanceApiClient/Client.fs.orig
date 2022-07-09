@@ -193,7 +193,11 @@ type public Client(settings:Settings) =
         member this.ListClosedOrdersOfCurrencies(pairs: CurrencyPair[]): ClosedOrder[] = 
             checkApiKeys()
 
+<<<<<<< HEAD
+            // todo: purge from invalid pairs
+=======
             // todo: remove invalid pairs
+>>>>>>> master
             let validPairs = 
                 (this :> IClient).ListPairs().ToArray()
                 |> Array.filter (fun pair -> (pairs |> Array.contains pair))
