@@ -130,6 +130,7 @@ type public Client(settings:Settings) =
             let stackingLockedDefi = 
                 getStacking(LockedDefi).Select(fun x -> CurrencyBalance( Currency(x.Key), 0m, 0m).AddStacking(x.Value)).ToArray()
                 |> List.ofArray   
+
             let stackingFixedDefi = 
                 getStacking(FixedDeFi).Select(fun x -> CurrencyBalance( Currency(x.Key), 0m, 0m).AddStacking(x.Value)).ToArray()
                 |> List.ofArray                
