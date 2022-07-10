@@ -1,6 +1,4 @@
-﻿//namespace UnitTests.Parder
-
-module UnitTests.``Assets Helper``
+﻿module UnitTests.``Assets Helper``
 
 open NUnit.Framework
 open FsUnit
@@ -9,7 +7,7 @@ open Alex75.Cryptocurrencies
 [<Test>]
 let ``correctAssets set non-fixed Stacking into correct asset as Stacking``() =
 
-    // Some Stacking assets are returned in a separate row and thecurrency is prefixed with "LD"
+    // Some Stacking assets are returned in a separate row and the currency is prefixed with "LD"
     let balance = [
         CurrencyBalance(Currency("AAA"), 100, 100, 0, 0, 0) // free asset
         CurrencyBalance(Currency("LDAAA"), 50, 50, 0, 0, 0) // Stacking asset

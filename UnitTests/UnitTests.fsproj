@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <GenerateProgramFile>false</GenerateProgramFile>
     <AssemblyName>UnitTests</AssemblyName>
+	<RootNamespace>UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="data\product Stacking.json" />
     <Content Include="data\account data.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -38,8 +39,9 @@
     <Content Include="data\list closed orders.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="parser.test.fs" />
     <Compile Include="assets helper.test.fs" />
-    <Compile Include="parser test.fs" />
+    <Compile Include="Client.test.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,25 +1,24 @@
 ﻿namespace Alex75.BinanceApiClient
 
 open System
+open System.Linq
 open System.Text
 open System.Threading.Tasks
 open System.Collections.Generic
 open System.Security.Cryptography
 open System.Globalization
-
 open Newtonsoft.Json; 
 open Newtonsoft.Json.Linq
 open Flurl.Http
 open Alex75.Cryptocurrencies
 open models
-open System.Linq
-
-
 
 type public Settings = { TickerCacheDuration:TimeSpan; PublicKey:string; SecretKey:string; }
 
 type CreateOrderPayload = { symbol:string; side:string; ``type``:string; quantity:decimal; timestamp:Int64}
 
+//"STAKING" for Locked Staking, "F_DEFI" for flexible DeFi Staking, "L_DEFI" for locked DeFi Staking
+type StackingProduct = | Stacking | FixedDeFi | LockedDefi
 
 type public Client(settings:Settings) =
 
@@ -37,6 +36,7 @@ type public Client(settings:Settings) =
     let getSymbol (pair:CurrencyPair) = f"%O%O" pair.Main pair.Other
 
     let getServerTime () = (f"%s/api/v3/time" baseUrl).GetJsonAsync<ServerTime>().Result.serverTime
+
     // ref: https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
     let recvWindow = 15*1000 // recvWindow cannot exceed 60000. Default: 5000
     
@@ -65,22 +65,24 @@ type public Client(settings:Settings) =
         (response, jsonContent, error)
 
 
-    let getStacking () =
-        //GET /sapi/v1/staking/productList
+    let getStacking (stacking:StackingProduct) =
         let url = f"%s/sapi/v1/staking/position" baseUrl 
+        
+        let product = match stacking with
+                      | Stacking -> "STAKING"
+                      | FixedDeFi -> "F_DEFI"
+                      | LockedDefi -> "L_DEFI"
 
-        // product paramenter (mandatory)
-        //"STAKING" for Locked Staking, "F_DEFI" for flexible DeFi Staking, "L_DEFI" for locked DeFi Staking
-
-
-        let parameters = f"timestamp=%i&product=%s" (getServerTime()) "STAKING"
+        let parameters = f"timestamp=%i&product=%s" (getServerTime()) product
         let signature = createHMACSignature(settings.SecretKey, parameters)
 
         let response = (f"%s?%s&signature=%s" url parameters signature)
                         .WithHeader("X-MBX-APIKEY", settings.PublicKey)
                         .AllowAnyHttpStatus().GetAsync().Result
         let jsonContent = response.Content.ReadAsStringAsync().Result
-        jsonContent
+
+        parser.parseStackingResponse jsonContent
+
 
     interface IClient with
 
@@ -119,7 +121,23 @@ type public Client(settings:Settings) =
         member this.GetBalance(): AccountBalance = 
             checkApiKeys()
 
-            let stacking = getStacking()
+            let stacking:IDictionary<string, decimal> = getStacking(Stacking)  
+            
+            let stackingLocked = 
+                stacking.Select(fun x -> CurrencyBalance( Currency(x.Key), 0m, 0m).AddStacking(x.Value)).ToArray()
+                |> List.ofArray  
+
+            let stackingLockedDefi = 
+                getStacking(LockedDefi).Select(fun x -> CurrencyBalance( Currency(x.Key), 0m, 0m).AddStacking(x.Value)).ToArray()
+                |> List.ofArray   
+            let stackingFixedDefi = 
+                getStacking(FixedDeFi).Select(fun x -> CurrencyBalance( Currency(x.Key), 0m, 0m).AddStacking(x.Value)).ToArray()
+                |> List.ofArray                
+
+            let addStacking (balance:CurrencyBalance)  = 
+                match stacking.TryGetValue balance.Currency.UpperCase with 
+                | true, value -> balance.AddStacking value
+                | _ -> balance
 
             match cache.GetAccountBalance balance_cache_time with
             | Some balance -> balance
@@ -135,9 +153,17 @@ type public Client(settings:Settings) =
                 let jsonContent = response.Content.ReadAsStringAsync().Result
 
                 if response.IsSuccessStatusCode then 
-                    let balance = parser.parse_account jsonContent
+                    let balances = 
+                        parser.parse_account jsonContent                     
+                        |> List.map addStacking             
+
+                    let balance = new AccountBalance(balances 
+                        |> List.append stackingLocked
+                        |> List.append stackingLockedDefi
+                        |> List.append stackingFixedDefi)
                     cache.SetAccountBalance balance
-                    balance
+                    balance                    
+                    
                 else failwith (parser.parse_error jsonContent)
 
 
