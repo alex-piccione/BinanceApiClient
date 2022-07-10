@@ -1,26 +1,26 @@
-﻿//namespace UnitTests.Parder
+﻿module UnitTests.Parser
 
-module UnitTests.Parser
-
+open System
+open System.IO
+open System.Reflection
 open NUnit.Framework; open FsUnit
 open Newtonsoft.Json; open Newtonsoft.Json.Linq
 open Alex75.Cryptocurrencies
-open System
 
+let assembly = Assembly.GetExecutingAssembly()
+let rootNamespace = assembly.GetName().Name
+let getText file = (new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{rootNamespace}.data.{file}"))).ReadToEnd()
 let readData file = System.IO.File.ReadAllText("data/" + file)
-
 
 [<Test>]
 let ``parse pairs``() =
     let pairs = parser.parse_pairs (readData "exchangeInfo.json")
     pairs |> should contain (CurrencyPair("eth", "btc"))
-        
+
 
 [<Test>]
-let ``parse error``() =
-    
-    let jsonString = "{\"msg\":\"Timestamp for this request is outside of the recvWindow.\",\"success\":false}"
-    
+let ``parse error``() =    
+    let jsonString = "{\"msg\":\"Timestamp for this request is outside of the recvWindow.\",\"success\":false}"    
     let json = JsonConvert.DeserializeObject<JObject>(jsonString)
 
     //check for error
@@ -33,15 +33,15 @@ let ``parse error``() =
 
 [<Test>]
 let ``parse account response`` () =
-    let balance = parser.parse_account (readData "account data.json")
+    let balances = parser.parse_account (readData "account data.json")
 
+    balances |> should not' (be Empty)
+    let balance = new AccountBalance(balances)
     balance |> should not' (be null)
     balance.HasCurrency(Currency.BTC) |> should be True
-    balance.[Currency.BTC].Free |> should equal 4723846.89208129
-    balance.[Currency.BTC].NotFree |> should equal 10.0
-    balance.[Currency.BTC].Total |> should equal (4723846.89208129 + 10.0)
-    //[Currency.BTC] |> should equal (4723846.89208129m + 10m)
-    //response.Assets.[Currency.LTC] |> should equal (4763368.68006011m + 20m)
+    balance[Currency.BTC].Free |> should equal 4723846.89208129
+    balance[Currency.BTC].NotFree |> should equal 10.0
+    balance[Currency.BTC].Total |> should equal (4723846.89208129 + 10.0)
 
 
 [<Test>]
@@ -81,4 +81,17 @@ let ``Parse Closed Orders`` () =
     orders.[0].Note |> should equal "executedQuantity: 1176.4 - clientOrderId:web_ebedcd0f5af94fca947644dc35aff7f4"
 
 
+[<Test>]
+let ``parse Stacking`` () =
+    let json = getText "product Stacking.json"
 
+    let result = parser.parseStackingResponse  json
+
+    result.Keys.Count |> should equal 3
+    result.ContainsKey("BNB") |> should be True
+    result.ContainsKey("DOT") |> should be True
+    result.ContainsKey("ADA") |> should be True
+
+    result["BNB"] |> should equal (0.15217204 + 0.5)
+    result["ADA"] |> should equal 0.1081
+    result["DOT"] |> should equal (51.00851999m + 10m + 10m)

@@ -42,25 +42,31 @@ let parse_account jsonString =
 
     let allItems = List.ofArray (json["balances"].Values<JObject>().ToArray())
     let balances = allItems |> List.choose getNonZeroAsset
-
-    (*let balance = new List<CurrencyBalance>()
-    for item in json["balances"].Values<JObject>() do
-        let asset = item["asset"].Value<string>()
-        let free = item["free"].Value<decimal>()
-        let locked = item["locked"].Value<decimal>()
-        let owned = free+locked
-        // skip zero amount assets
-        if owned > 0m then balance.Add(CurrencyBalance(asset, owned, free))  *)
        
     // Stacking create "strange" assets, compact them with correct ones
     let correctedBalance = assets_helper.correctAssets(balances)
 
-    new AccountBalance(correctedBalance)
+    correctedBalance
 
+
+let parseStackingResponse jsonString = 
+    let json = JsonConvert.DeserializeObject<JArray>(jsonString) 
+
+    let getStacking (json:JObject) = json["asset"].Value<string>(), json["amount"].Value<decimal>()
+
+    let sumAmount (grouped:(string * decimal) list): decimal =
+        grouped |> List.fold (fun acc (x,v) -> acc + v) 0m
+
+    json.Values<JObject>().ToArray()
+    |> List.ofArray
+    |> List.map getStacking
+    |> List.groupBy (fun (a,_) -> a) // group by asset
+    |> List.map (fun (a,vl) -> a, sumAmount(vl))  // sum the amount of asset
+    |> dict
 
 let ParseCreateOrderResponse jsonString =
     let json = JsonConvert.DeserializeObject<JObject>(jsonString) 
-    (json["OrderId"].Value<string>(), json["price"].Value<decimal>())
+    json["OrderId"].Value<string>(), json["price"].Value<decimal>()
 
 
 let ParseOpenOrders pair jsonString =

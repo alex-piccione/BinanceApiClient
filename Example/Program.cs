@@ -42,15 +42,12 @@ namespace Example
                 }
 
                 Console.WriteLine("----- ");
-
             }
             catch (Exception exc)
             {
                 Console.WriteLine("Failed to load Balance. " + exc);
             }
         }
-
-
 
         private static void Buy(IClient client, CurrencyPair pair, decimal amount)
         {
