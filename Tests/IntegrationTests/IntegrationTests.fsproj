@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="7.0.0" />
-    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.5.15" />
+    <PackageReference Include="Alex75.Cryptocurrencies" Version="1.5.16" />
     <PackageReference Include="FsUnit" Version="5.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="nunit" Version="3.13.3" />
