@@ -19,6 +19,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure", ".azure", "{13DD8C12-F8F4-42C9-8C6C-4FE115E7D6D1}"
 	ProjectSection(SolutionItems) = preProject
 		.azure\dev-branches-pipelines.yaml = .azure\dev-branches-pipelines.yaml
+		.azure\master-pipelines.yml = .azure\master-pipelines.yml
 		.azure\pipeline (master).yaml = .azure\pipeline (master).yaml
 	EndProjectSection
 EndProject
