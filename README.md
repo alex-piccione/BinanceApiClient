@@ -1,8 +1,8 @@
 # Binance API Client
 
-Simple client interface to facilitate the use of some **Binance** API. 
-Target frameworks: _.NET Standard 2.0_ & _.NET Core 3.1_  
-Tested thorougly with _XRP_ currency.  
+Simple client interface to facilitate the use of some **Binance** API.  
+Target frameworks: _.NET Standard 2.0_, _.NET Core 3.1_ & .net 6.0  
+Tested thoroughly with _XRP_ currency.  
   
 Code Repository: https://github.com/alex-piccione/BinanceApiClient  
 CI/CD: [Azure DevOps](https://alex75.visualstudio.com/Binance%20API%20Client)  
@@ -18,8 +18,8 @@ CI/CD: [Azure DevOps](https://alex75.visualstudio.com/Binance%20API%20Client)
 | List Pairs                 | List pairs available on the exchange                            | Done
 | Get Ticker / Get Tickers   | Get the Ask/Bid/Min/Max/Last prices of currency pair(s)         | Done
 | Get Balance                | List the owned and free amount of all the not empty currencies  | Done
-| Create Market Order        | Create a market order		                                   | TODO
-| Create Limit Order         | Create a market order	                                       | Done
+| Create Market Order        | Create a market order		                                       | TODO
+| Create Limit Order         | Create a market order	                                         | Done
 | List Open Orders           | List the active orders on the specified markets                 | Done
 | List Closed orders         | List completed orders                                           | Done
 | Withdraw                   | Withdraw a currency                                             | Done
