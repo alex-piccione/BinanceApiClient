@@ -7,7 +7,6 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Alex75.BinanceApiClient", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{729321D1-E26B-419E-8CE3-6A1298A017E8}"
 	ProjectSection(SolutionItems) = preProject
-		.azure\dev-branches-pipelines.yaml = .azure\dev-branches-pipelines.yaml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -19,9 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Example\Example.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure", ".azure", "{13DD8C12-F8F4-42C9-8C6C-4FE115E7D6D1}"
 	ProjectSection(SolutionItems) = preProject
-		.azure\feature-pipelines-2.yml = .azure\feature-pipelines-2.yml
-		.azure\feature-pipelines.yml = .azure\feature-pipelines.yml
-		.azure\pipeline (feature).yaml = .azure\pipeline (feature).yaml
+		.azure\dev-branches-pipelines.yaml = .azure\dev-branches-pipelines.yaml
 		.azure\pipeline (master).yaml = .azure\pipeline (master).yaml
 	EndProjectSection
 EndProject
