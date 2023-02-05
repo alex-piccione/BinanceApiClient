@@ -1,4 +1,4 @@
-﻿namespace UnitTest
+﻿namespace IntegrationTests.Client.Order
 
 open System
 open NUnit.Framework
@@ -8,7 +8,7 @@ open Alex75.Cryptocurrencies
 open Alex75.BinanceApiClient
 
 
-[<Category("Client"); Category("AFFECTS_BALANCE")>]
+[<Category("AFFECTS_BALANCE")>]
 type ClientTest_Order () =
 
     let client = Client(settings.settings) :> IClient
