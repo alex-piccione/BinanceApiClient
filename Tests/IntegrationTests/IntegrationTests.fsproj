@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
+    <ProjectReference Include="..\..\Alex75.BinanceApiClient\Alex75.BinanceApiClient.fsproj" />
   </ItemGroup>
 
 </Project>
